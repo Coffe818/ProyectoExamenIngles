@@ -1,8 +1,6 @@
 -- DROP TABLES en orden correcto
 DROP TABLE IF EXISTS examen_ingles_respuesta_usuario;
 
-DROP TABLE IF EXISTS examen_ingles_resultado;
-
 DROP TABLE IF EXISTS examen_ingles_respuesta_pregunta;
 
 DROP TABLE IF EXISTS examen_ingles_pregunta;
