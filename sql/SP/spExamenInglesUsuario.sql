@@ -2,10 +2,9 @@ DROP PROCEDURE IF EXISTS spExamenInglesInsertUsuario;
 
 CREATE PROCEDURE spExamenInglesInsertUsuario(IN _nombre VARCHAR(500), IN _email VARCHAR(500), IN _contrasena VARCHAR(500), OUT id_usuario INT)
 BEGIN
-    insert into examen_ingles_usuario (nombre, email, contrasena) values (_nombre, _email, _contrasena,);
-    SELECT LAST_INSERT_ID() as id_usuario;
+    insert into examen_ingles_usuario (nombre, email, contrasena) values (_nombre, _email, _contrasena);
+    SET id_usuario = LAST_INSERT_ID();
 END;
-
 
 DROP PROCEDURE IF EXISTS spExamenInglesGetUsuario;
 
