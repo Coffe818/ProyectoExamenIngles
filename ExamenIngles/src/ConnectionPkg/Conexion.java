@@ -64,7 +64,7 @@ public class Conexion {
         try {
             comando.setObject(parameterName, value);
         } catch (Exception e) {
-            System.out.println("Error al agregar el parmetro " + parameterName + ": " + e.getMessage());
+            System.out.println("Error al agregar el parametro " + parameterName + ": " + e.getMessage());
         }
     }
 
@@ -72,7 +72,7 @@ public class Conexion {
         try {
             comando.registerOutParameter(parameterName, sqlType);
         } catch (Exception e) {
-            System.out.println("Error al agregar el parmetro de salida " + parameterName + ": " + e.getMessage());
+            System.out.println("Error al agregar el parametro de salida " + parameterName + ": " + e.getMessage());
         }
     }
 

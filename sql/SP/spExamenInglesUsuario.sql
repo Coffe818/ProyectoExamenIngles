@@ -20,6 +20,11 @@ BEGIN
     update examen_ingles_usuario set nivel_ingles = _nivel_ingles where id_usuario = _id_usuario;
 END;
 
+DROP PROCEDURE IF EXISTS spValidarUsuario;
 
+CREATE PROCEDURE spValidarUsuario(IN _email VARCHAR(500), IN _contrasena VARCHAR(500), OUT _nombre VARCHAR(500))
+BEGIN
+    SELECT nombre INTO _nombre from examen_ingles_usuario where email = _email and contrasena = _contrasena;
+END;
 
 SELECT * from examen_ingles_usuario
