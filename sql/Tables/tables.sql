@@ -1,3 +1,4 @@
+use simulacion;
 -- DROP TABLES en orden correcto
 DROP TABLE IF EXISTS examen_ingles_respuesta_usuario;
 
