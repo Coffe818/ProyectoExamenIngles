@@ -758,6 +758,32 @@ CREATE TEMPORARY TABLE  IF NOT EXISTS temp_respuestas (
         
 
         TRUNCATE temp_respuestas  ;
+
+         -- Pregunta 29
+        INSERT INTO examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        SELECT 29, 'I hate my legs! they are ____ fat. My hair is _____ pretty, though.', 'Pre-intermediate'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_pregunta 
+            WHERE id_pregunta = 29
+        );
+        
+-- Respuestas para la pregunta 29
+
+        INSERT INTO temp_respuestas (texto_respuesta, es_correcta)
+        VALUES ('too / Too', 0), ('really / too', 0), ('too / really', 1), ('Much / too', 0);
+        
+
+        INSERT INTO examen_ingles_respuesta_pregunta ( id_pregunta, texto_respuesta, es_correcta)
+        SELECT  29, texto_respuesta, es_correcta
+        FROM temp_respuestas
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_respuesta_pregunta 
+            WHERE texto_respuesta = temp_respuestas.texto_respuesta 
+              AND id_pregunta = 29
+        );
+        
+
+        TRUNCATE temp_respuestas  ;
         
 
         -- Pregunta 30
