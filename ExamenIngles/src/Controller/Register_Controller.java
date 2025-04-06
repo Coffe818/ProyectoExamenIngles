@@ -19,12 +19,12 @@ public class Register_Controller {
     public String authenticateUser(String email, String password) {
         Conexion con = new Conexion();
         try {
-            String storedProcedureName = "spValidarUsuario";
-            con.prepareCall(storedProcedureName, 3);
+            String storedProcedureName = "spExamenInglesValidarUsuario";
+            con.prepareCall(storedProcedureName, 4);
             con.addInParameter("_email", email);
             con.addInParameter("_contrasena", password);
             con.addOutParameter("_nombre", java.sql.Types.VARCHAR);
-            con.addOutParameter("_id", java.sql.Types.INTEGER);
+            con.addOutParameter("_id_usuario", java.sql.Types.INTEGER);
             
             con.execute();
             String nombre = con.getOutParameter("_nombre", String.class);
