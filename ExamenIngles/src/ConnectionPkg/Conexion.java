@@ -8,7 +8,7 @@ public class Conexion {
     private String port= "3306";
     private String database= "simulacion";
     private String username = "root";
-    private String password = "rootpsw";
+    private String password = "root";
 
     // LO DE ARRIBA ES PARA LA CONEXION A LA BASE DE DATOS, A ESA LA PUEDES CAMBIAR A LA TUYA SI NO NO TE VA A FUNCIONAR
 

@@ -1,11 +1,12 @@
 
-package vista;
+package Vista;
 
 import java.awt.Color;
 
 import javax.swing.ImageIcon;
 
-import login_register_controller.controller; // Add this import statement
+import Controller.Register_Controller;
+import assets.Enum.ImagenRuta;
 
 public class Register_Form extends javax.swing.JFrame {
 
@@ -40,7 +41,7 @@ public class Register_Form extends javax.swing.JFrame {
         bg.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setFont(new java.awt.Font("Roboto SemiBold", 2, 18)); // NOI18N
-        jLabel3.setIcon(new ImageIcon("C:/Users/rodry/ProyectoExamenIngles/ExamenIngles/src/assets/images/Resized.png")); // NOI18N
+        jLabel3.setIcon(new ImageIcon(ImagenRuta.RESIZED.getRuta())); // NOI18N
         jLabel3.setText("  Facultad de Sistemas");
         bg.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 260, 80));
 
@@ -104,7 +105,7 @@ public class Register_Form extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(65, 71, 68));
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new ImageIcon("C:/Users/rodry/ProyectoExamenIngles/ExamenIngles/src/assets/images/uadeclogo.png")); // NOI18N
+        jLabel2.setIcon(new ImageIcon(ImagenRuta.LOGO_UADEC.getRuta())); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -199,7 +200,7 @@ public class Register_Form extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {
         // javax.swing.JOptionPane.showMessageDialog(this, "Logica de insercion de usuario con variables:\nNombre: " + nombreTxt.getText() + "\nCorreo: " + emailTxt.getText() + "\nPassword: " + new String(passwordTxt.getPassword()));
 
-        controller controller = new controller();
+        Register_Controller controller = new Register_Controller();
         controller.insertUser(emailTxt.getText(), new String(passwordTxt.getPassword()), nombreTxt.getText());
 
         new Login_Form().setVisible(true);

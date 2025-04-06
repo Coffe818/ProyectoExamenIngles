@@ -1,10 +1,12 @@
-package login_register_controller;
+package Controller;
 
 import ConnectionPkg.Conexion;
+import util.IDManager;
+
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-public class controller {
+public class Register_Controller {
 
     /**
      * Authenticates a user using the provided email and password.
@@ -22,9 +24,11 @@ public class controller {
             con.addInParameter("_email", email);
             con.addInParameter("_contrasena", password);
             con.addOutParameter("_nombre", java.sql.Types.VARCHAR);
+            con.addOutParameter("_id", java.sql.Types.INTEGER);
             
             con.execute();
             String nombre = con.getOutParameter("_nombre", String.class);
+            Integer id = con.getOutParameter("_id_usuario", Integer.class);
 
             if(email.equals("") || password.equals("")) {
                 JOptionPane.showMessageDialog(null, "Please fill all fields");
@@ -33,6 +37,7 @@ public class controller {
 
             if(nombre != null) {
                 JOptionPane.showMessageDialog(null, nombre + " logueado correctamente");
+                IDManager.getInstance().setId(id);
                 return nombre;
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid credentials");
@@ -61,6 +66,8 @@ public class controller {
             con.execute();
             Integer id_usuario = con.getOutParameter("id_usuario", Integer.class); 
             JOptionPane.showMessageDialog(null, "Usuario" + id_usuario + " insertado correctamente");
+            IDManager.getInstance().setId(id_usuario);
+
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al insertar usuario: " + e.getMessage());

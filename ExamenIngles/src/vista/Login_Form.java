@@ -1,11 +1,12 @@
 
-package vista;
+package Vista;
 
 import java.awt.Color;
 
 import javax.swing.ImageIcon;
 
-import login_register_controller.controller;
+import Controller.Register_Controller;
+import assets.Enum.ImagenRuta;
 
 /**
  *
@@ -46,7 +47,7 @@ public class Login_Form extends javax.swing.JFrame {
         bg.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setFont(new java.awt.Font("Roboto SemiBold", 2, 18)); // NOI18N
-        jLabel3.setIcon(new ImageIcon("C:/Users/rodry/ProyectoExamenIngles/ExamenIngles/src/assets/images/Resized.png"));
+        jLabel3.setIcon(new ImageIcon(ImagenRuta.RESIZED.getRuta()));
 
         jLabel3.setText("  Facultad de Sistemas");
         bg.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 260, 80));
@@ -116,7 +117,7 @@ public class Login_Form extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(65, 71, 68));
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new ImageIcon("C:/Users/rodry/ProyectoExamenIngles/ExamenIngles/src/assets/images/uadeclogo.png"));
+        jLabel2.setIcon(new ImageIcon(ImagenRuta.LOGO_UADEC.getRuta()));
 
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -178,7 +179,7 @@ public class Login_Form extends javax.swing.JFrame {
 
     private void loginBtnMouseClicked(java.awt.event.MouseEvent evt) {
         // javax.swing.JOptionPane.showMessageDialog(this, "Logica de inicio de sesion con variables \nCorreo: " + emailTxt.getText() + "\nPassword: " + new String(passwordTxt.getPassword()));
-        controller controller = new controller();
+        Register_Controller controller = new Register_Controller();
         controller.authenticateUser(emailTxt.getText(), new String(passwordTxt.getPassword()));
     }
 

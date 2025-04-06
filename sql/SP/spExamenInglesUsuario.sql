@@ -27,4 +27,9 @@ BEGIN
     SELECT nombre INTO _nombre from examen_ingles_usuario where email = _email and contrasena = _contrasena;
 END;
 
-SELECT * from examen_ingles_usuario
+
+DROP PROCEDURE IF EXISTS spExamenInglesValidarUsuario;
+
+CREATE PROCEDURE `spExamenInglesValidarUsuario`(IN _email VARCHAR(500), IN _contrasena VARCHAR(500), OUT _nombre VARCHAR(500), OUT _id_usuario INT) 
+BEGIN SELECT nombre, id_usuario INTO _nombre, _id_usuario  from examen_ingles_usuario where email = _email and contrasena = _contrasena;
+END;
