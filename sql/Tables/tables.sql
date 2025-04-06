@@ -37,21 +37,12 @@ CREATE TABLE IF NOT EXISTS examen_ingles_pregunta (
     nivel_ingles VARCHAR(500) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS examen_ingles_respuesta_pregunta (
-    id_respuesta_pregunta INT NOT NULL AUTO_INCREMENT  PRIMARY KEY,
-    id_pregunta INT NOT NULL,
-    texto_respuesta VARCHAR(500) NOT NULL,
-    es_correcta TINYINT(1) NOT NULL,
-    FOREIGN KEY (id_pregunta) REFERENCES examen_ingles_pregunta (id_pregunta)
-);
-
 
 CREATE TABLE IF NOT EXISTS examen_ingles_respuesta_usuario (
     id_respuesta_usuario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_examen INT NOT NULL,
     id_pregunta INT NOT NULL,
-    id_respuesta_pregunta INT NOT NULL,
+    es_correcta BOOLEAN NOT NULL,
     FOREIGN KEY (id_examen) REFERENCES examen_ingles_examen (id_examen),
-    FOREIGN KEY (id_pregunta) REFERENCES examen_ingles_pregunta (id_pregunta),
-    FOREIGN KEY (id_respuesta_pregunta) REFERENCES examen_ingles_respuesta_pregunta (id_respuesta_pregunta)
+    FOREIGN KEY (id_pregunta) REFERENCES examen_ingles_pregunta (id_pregunta)
 );
