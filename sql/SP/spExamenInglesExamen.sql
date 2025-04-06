@@ -10,7 +10,7 @@ END;
 
 DROP PROCEDURE IF EXISTS spExamenInblesGetExamenByUsuario;
 
-CREATE PROCEDURE spExamenInblesGetExamen(IN _id_usuario INT)
+CREATE PROCEDURE spExamenInblesGetExamenByUsuario(IN _id_usuario INT)
 BEGIN
     select * from examen_ingles_examen where id_usuario = _id_usuario;
 END;
