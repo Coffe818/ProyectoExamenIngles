@@ -22,6 +22,16 @@ public class IDManager {
     public int getIdUsuario() {
         return id_usuario;
     }
+
+    public int getId_examen() {
+        return id_examen;
+    }
+
+    public void setId_examen(int id_examen) {
+        this.id_examen = id_examen;
+    }
+
+    
 }
 
 // // Uso:
