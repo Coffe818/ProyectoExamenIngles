@@ -2,7 +2,9 @@ package util;
 
 public class IDManager {
     private static IDManager instance;
-    private int id;
+    private int id_usuario;
+    private int id_examen;
+    
 
     private IDManager() {}
 
@@ -13,12 +15,12 @@ public class IDManager {
         return instance;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUsuario(int id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
-    public int getId() {
-        return id;
+    public int getIdUsuario() {
+        return id_usuario;
     }
 }
 

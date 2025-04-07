@@ -180,7 +180,12 @@ public class Login_Form extends javax.swing.JFrame {
     private void loginBtnMouseClicked(java.awt.event.MouseEvent evt) {
         // javax.swing.JOptionPane.showMessageDialog(this, "Logica de inicio de sesion con variables \nCorreo: " + emailTxt.getText() + "\nPassword: " + new String(passwordTxt.getPassword()));
         Register_Controller controller = new Register_Controller();
-        controller.authenticateUser(emailTxt.getText(), new String(passwordTxt.getPassword()));
+        String a =controller.authenticateUser(emailTxt.getText(), new String(passwordTxt.getPassword()));
+        if (a!= null) {
+            //new Examen_Form().setVisible(true);
+            this.dispose();
+        } 
+
     }
 
     private void registerLblMouseClicked(java.awt.event.MouseEvent evt) {
