@@ -5,7 +5,7 @@ public class IDManager {
     private int id_usuario;
     private int id_examen;
     
-
+    private String nombre_usuario;
     private IDManager() {}
 
     public static IDManager getInstance() {
