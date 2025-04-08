@@ -4,6 +4,7 @@ public class IDManager {
     private static IDManager instance;
     private int id_usuario;
     private int id_examen;
+    private int pruebas = 0;
     
 
     private IDManager() {}
