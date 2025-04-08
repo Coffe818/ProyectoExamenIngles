@@ -28,7 +28,7 @@ public class IDManager {
     }
 
     public void setId_examen(int id_examen) {
-        this.id_examen = id_examen;
+        this.id_examen = id_examen;   
     }
 
     
