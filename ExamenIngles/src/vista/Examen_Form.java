@@ -7,54 +7,25 @@
  *
  * @author josem
  */
+package Vista;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Timer;
 
-class Pregunta {
+import util.PreguntaModel;
+import util.RespuestaModel;
 
-    int id;
-    String texto;
-    String nivel;
-    int idRespuestaCorrecta;
 
-    public Pregunta(int id, String texto, String nivel, int idRespuestaCorrecta) {
-        this.id = id;
-        this.texto = texto;
-        this.nivel = nivel;
-        this.idRespuestaCorrecta = idRespuestaCorrecta;
-    }
-
-    @Override
-    public String toString() {
-        return "Pregunta [" + id + "] (" + nivel + "): " + texto;
-    }
-}
-
-class Respuesta {
-
-    String texto;
-    int id;
-
-    public Respuesta(String texto, int id) {
-        this.texto = texto;
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "- " + texto;
-    }
-}
 
 public class Examen_Form extends javax.swing.JFrame {
 
     /**
      * Creates new form Examen_Form
      */
-    private List<Pregunta> listapreguntas = null;
-    private Map<Integer, List<Respuesta>> maparespuestas = null;
+    private List<PreguntaModel> listapreguntas = null;
+    private Map<Integer, List<RespuestaModel>> maparespuestas = null;
     private String nombre = null;
     private int preguntaActualIndex;
     private Timer timer;
@@ -62,7 +33,7 @@ public class Examen_Form extends javax.swing.JFrame {
     
     
 
-    public Examen_Form(List<Pregunta> listapreguntas, Map<Integer, List<Respuesta>> maparespuestas, String nombre) {
+    public Examen_Form(List<PreguntaModel> listapreguntas, Map<Integer, List<RespuestaModel>> maparespuestas, String nombre) {
         this.listapreguntas = listapreguntas;
         this.maparespuestas = maparespuestas;
         this.nombre = nombre;
@@ -73,8 +44,8 @@ public class Examen_Form extends javax.swing.JFrame {
     }
 
     private void mostrarPreguntaActual() {
-        Pregunta pregunta = this.listapreguntas.get(this.preguntaActualIndex);
-        List<Respuesta> respuestas = maparespuestas.get(pregunta.id);
+        PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
+        List<RespuestaModel> respuestas = maparespuestas.get(pregunta.id);
         String textoConBr = pregunta.texto.replace("\n", "<br>");
         String textopregunta = Integer.toString(this.preguntaActualIndex + 1) + ".- " + textoConBr;
         String textoHtml = "<html>" + textopregunta + "</html>";
@@ -190,8 +161,8 @@ public class Examen_Form extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSiguienteActionPerformed
-        Pregunta pregunta = this.listapreguntas.get(this.preguntaActualIndex);
-        List<Respuesta> respuestas = this.maparespuestas.get(this.preguntaActualIndex);
+        PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
+        List<RespuestaModel> respuestas = this.maparespuestas.get(this.preguntaActualIndex);
         
         
         
