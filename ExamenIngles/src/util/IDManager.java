@@ -4,9 +4,7 @@ public class IDManager {
     private static IDManager instance;
     private int id_usuario;
     private int id_examen;
-    private int PRUEBASYYYY = 0;
     
-    private String nombre_usuario;
     private IDManager() {}
 
     public static IDManager getInstance() {

@@ -28,8 +28,9 @@ public class Examen_Form extends javax.swing.JFrame {
     private Map<Integer, List<RespuestaModel>> maparespuestas = null;
     private String nombre = null;
     private int preguntaActualIndex;
-    private Timer timer;
     private Map<Integer, Integer> respuestasUsuario = new HashMap<>();
+    private Timer timer;
+    private int segundos = 0;
     
     
 
@@ -41,7 +42,33 @@ public class Examen_Form extends javax.swing.JFrame {
         this.preguntaActualIndex = 0;
         LabelNombre.setText(this.nombre);
         mostrarPreguntaActual();
+        iniciarTemporizador();
     }
+
+    private void iniciarTemporizador() {
+        timer = new Timer(1000, new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                segundos++;
+    
+                int minutos = segundos / 60;
+                int segs = segundos % 60;
+    
+                LabelTiempo.setText(String.format("%02d:%02d", minutos, segs));
+    
+                if (segundos == 60) {
+                    System.out.println("se logró");
+                    SiguentePregunta();
+                    timer.stop(); // detener si solo quieres 1 minuto
+                }
+            }
+        });
+    
+        timer.start();
+    }
+    
+
+
 
     private void mostrarPreguntaActual() {
         PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
@@ -58,8 +85,44 @@ public class Examen_Form extends javax.swing.JFrame {
     }
 
     private void finalizarExamen() {
+        LabelPregunta.setText("Examen finalizado");
+        System.out.println(this.respuestasUsuario);
         
+    }
 
+    private void SiguentePregunta(){
+        PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
+        List<RespuestaModel> respuestas = this.maparespuestas.get(pregunta.id);
+        
+        
+        
+        int respuestaSeleccionadaId = -1;
+        if (RadioButtonRespuesta1.isSelected()) {
+            respuestaSeleccionadaId = respuestas.get(0).id;
+        } else if (RadioButtonRespuesta2.isSelected()) {
+            respuestaSeleccionadaId = respuestas.get(1).id;
+        } else if (RadioButtonRespuesta3.isSelected()) {
+            respuestaSeleccionadaId = respuestas.get(2).id;
+        } else if (RadioButtonRespuesta4.isSelected()) {
+            respuestaSeleccionadaId = respuestas.get(3).id;
+        }
+
+        respuestasUsuario.put(pregunta.id, respuestaSeleccionadaId);
+        System.out.println("Respuesta seleccionada: " + respuestaSeleccionadaId);
+        
+        if (this.preguntaActualIndex + 1 < this.listapreguntas.size()) {
+
+            this.preguntaActualIndex++;
+                        
+            buttonGroup1.clearSelection();
+
+            mostrarPreguntaActual();
+            segundos = 0;
+            LabelTiempo.setText("00:00");
+        } else {
+            finalizarExamen();
+            timer.stop();
+        }
     }
 
     /**
@@ -161,32 +224,8 @@ public class Examen_Form extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSiguienteActionPerformed
-        PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
-        List<RespuestaModel> respuestas = this.maparespuestas.get(this.preguntaActualIndex);
+        SiguentePregunta();
         
-        
-        
-        int respuestaSeleccionadaId = -1;
-        if (RadioButtonRespuesta1.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(0).id;
-        } else if (RadioButtonRespuesta2.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(1).id;
-        } else if (RadioButtonRespuesta3.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(2).id;
-        } else if (RadioButtonRespuesta4.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(3).id;
-        }
-
-        respuestasUsuario.put(pregunta.id, respuestaSeleccionadaId);
-        
-        
-        if (this.preguntaActualIndex + 1 < this.listapreguntas.size()) {
-
-            this.preguntaActualIndex++;
-            mostrarPreguntaActual();
-        } else {
-
-        }
     }//GEN-LAST:event_ButtonSiguienteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

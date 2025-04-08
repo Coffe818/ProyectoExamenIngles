@@ -9,6 +9,7 @@
  */
 
 package Controller;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +21,6 @@ import ConnectionPkg.Conexion;
 import Vista.Examen_Form;
 import util.PreguntaModel;
 import util.RespuestaModel;
-
-
 
 class Configuracion {
     int cantidad;
@@ -119,35 +118,32 @@ public class Examen_Controller {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         Examen_Controller controller = new Examen_Controller();
-        // Obtener datos (simulamos tipo examen 2 y nombre)
         int tipoExamen = 1;
-        String nombre = "José M."; // Puedes obtener esto de otro lado
+        String nombre = "José M.";
         Map<String, Object> datosExamen = controller.obtenerPreguntasYRespuestas(tipoExamen);
 
         List<PreguntaModel> preguntas = (List<PreguntaModel>) datosExamen.get("preguntas");
-        Map<Integer, List<RespuestaModel>> respuestas = (Map<Integer, List<RespuestaModel>>) datosExamen.get("respuestas");
+        Map<Integer, List<RespuestaModel>> respuestas = (Map<Integer, List<RespuestaModel>>) datosExamen
+                .get("respuestas");
 
-        // --- Depuración: Imprimir lo que se obtuvo ---
         System.out.println("Preguntas obtenidas: " + preguntas.size());
 
-      
         int i = 0;
         for (PreguntaModel p : preguntas) {
             i++;
-            System.out.println(i + " - " + p );
+            System.out.println(i + " - " + p);
             List<RespuestaModel> rList = respuestas.get(p.id);
             if (rList != null) {
                 for (RespuestaModel r : rList) {
-                    System.out.println("   - " + r );
+                    System.out.println("   - " + r);
                 }
             } else {
-                 System.out.println("   !!! No hay respuestas para esta pregunta en el mapa !!!");
+                System.out.println("   !!! No hay respuestas para esta pregunta en el mapa !!!");
             }
             System.out.println();
-        };
-        
-        
-        // --- Fin Depuración ---
+        }
+        ;
+
         Examen_Form examen = new Examen_Form(preguntas, respuestas, nombre);
         examen.setVisible(true);
 
