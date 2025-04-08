@@ -8,7 +8,7 @@
  * @author josem
  */
 
-
+package Controller;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import ConnectionPkg.Conexion;
+import Vista.Examen_Form;
+import util.PreguntaModel;
+import util.RespuestaModel;
 
 
 
@@ -29,40 +32,6 @@ class Configuracion {
         this.cantidad = cantidad;
         this.rangoInicio = rangoInicio;
         this.rangoFin = rangoFin;
-    }
-}
-
-class Pregunta {
-    int id;
-    String texto;
-    String nivel;
-    int idRespuestaCorrecta;
-
-    public Pregunta(int id, String texto, String nivel, int idRespuestaCorrecta) {
-        this.id = id;
-        this.texto = texto;
-        this.nivel = nivel;
-        this.idRespuestaCorrecta = idRespuestaCorrecta;
-    }
-
-    @Override
-    public String toString() {
-        return "Pregunta [" + id + "] (" + nivel + "): " + texto;
-    }
-}
-
-class Respuesta {
-    String texto;
-    int id;
-
-    public Respuesta(String texto, int id) {
-        this.texto = texto;
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "- " + texto;
     }
 }
 
@@ -85,8 +54,8 @@ public class Examen_Controller {
 
     public Map<String, Object> obtenerPreguntasYRespuestas(int tipoExamen) {
         List<Configuracion> Examen = tipoExamen == 1 ? this.ExamenPrueba : this.Examenfinal;
-        List<Pregunta> listaPreguntas = new ArrayList<>();
-        Map<Integer, List<Respuesta>> mapaRespuestas = new HashMap<>();
+        List<PreguntaModel> listaPreguntas = new ArrayList<>();
+        Map<Integer, List<RespuestaModel>> mapaRespuestas = new HashMap<>();
         // List<Integer> listaIdsPreguntas = new ArrayList<>();
         Conexion conexion = new Conexion();
 
@@ -107,9 +76,9 @@ public class Examen_Controller {
                     conexion.addInParameter("_idPregunta", idPregunta);
                     ResultSet rsPregunta = conexion.executeResultSet();
 
-                    Pregunta pregunta = null;
+                    PreguntaModel pregunta = null;
                     if (rsPregunta != null && rsPregunta.next()) {
-                        pregunta = new Pregunta(
+                        pregunta = new PreguntaModel(
                                 rsPregunta.getInt("id_pregunta"),
                                 rsPregunta.getString("texto_pregunta"),
                                 rsPregunta.getString("nivel_ingles"),
@@ -122,9 +91,9 @@ public class Examen_Controller {
                         conexion.addInParameter("_idPregunta", idPregunta);
                         ResultSet rsRespuesta = conexion.executeResultSet();
 
-                        List<Respuesta> respuestas = new ArrayList<>();
+                        List<RespuestaModel> respuestas = new ArrayList<>();
                         while (rsRespuesta != null && rsRespuesta.next()) {
-                            respuestas.add(new Respuesta(
+                            respuestas.add(new RespuestaModel(
                                     rsRespuesta.getString("texto_respuesta"),
                                     rsRespuesta.getInt("id_respuesta_pregunta")));
                         }
@@ -155,20 +124,20 @@ public class Examen_Controller {
         String nombre = "José M."; // Puedes obtener esto de otro lado
         Map<String, Object> datosExamen = controller.obtenerPreguntasYRespuestas(tipoExamen);
 
-        List<Pregunta> preguntas = (List<Pregunta>) datosExamen.get("preguntas");
-        Map<Integer, List<Respuesta>> respuestas = (Map<Integer, List<Respuesta>>) datosExamen.get("respuestas");
+        List<PreguntaModel> preguntas = (List<PreguntaModel>) datosExamen.get("preguntas");
+        Map<Integer, List<RespuestaModel>> respuestas = (Map<Integer, List<RespuestaModel>>) datosExamen.get("respuestas");
 
         // --- Depuración: Imprimir lo que se obtuvo ---
         System.out.println("Preguntas obtenidas: " + preguntas.size());
 
       
         int i = 0;
-        for (Pregunta p : preguntas) {
+        for (PreguntaModel p : preguntas) {
             i++;
             System.out.println(i + " - " + p );
-            List<Respuesta> rList = respuestas.get(p.id);
+            List<RespuestaModel> rList = respuestas.get(p.id);
             if (rList != null) {
-                for (Respuesta r : rList) {
+                for (RespuestaModel r : rList) {
                     System.out.println("   - " + r );
                 }
             } else {
@@ -179,7 +148,7 @@ public class Examen_Controller {
         
         
         // --- Fin Depuración ---
-        Examen_Form examen = new Examen_Form(preguntas, respuestas,nombre);
+        Examen_Form examen = new Examen_Form(preguntas, respuestas, nombre);
         examen.setVisible(true);
 
     }
