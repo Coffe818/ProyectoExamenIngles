@@ -182,7 +182,7 @@ public class Login_Form extends javax.swing.JFrame {
         Register_Controller controller = new Register_Controller();
         String a =controller.authenticateUser(emailTxt.getText(), new String(passwordTxt.getPassword()));
         if (a!= null) {
-            //new Examen_Form().setVisible(true);
+            new Desicion_From().setVisible(true);
             this.dispose();
         } 
 

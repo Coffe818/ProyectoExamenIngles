@@ -4,8 +4,17 @@ public class IDManager {
     private static IDManager instance;
     private int id_usuario;
     private int id_examen;
+    private String nombre_usuario;
     
     private IDManager() {}
+
+    public String getNombre_usuario() {
+        return nombre_usuario;
+    }
+
+    public void setNombre_usuario(String nombre_usuario) {
+        this.nombre_usuario = nombre_usuario;
+    }
 
     public static IDManager getInstance() {
         if (instance == null) {

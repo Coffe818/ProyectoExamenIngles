@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.Timer;
 
+import Controller.Examen_Controller;
+import util.IDManager;
 import util.PreguntaModel;
 import util.RespuestaModel;
 
@@ -31,12 +33,25 @@ public class Examen_Form extends javax.swing.JFrame {
     private Map<Integer, Integer> respuestasUsuario = new HashMap<>();
     private Timer timer;
     private int segundos = 0;
+    private int tipoExamen = 0;
     
     
 
-    public Examen_Form(List<PreguntaModel> listapreguntas, Map<Integer, List<RespuestaModel>> maparespuestas, String nombre) {
-        this.listapreguntas = listapreguntas;
-        this.maparespuestas = maparespuestas;
+    @SuppressWarnings("unchecked")
+    public Examen_Form(String nombre, int tipoExamen) {
+        this.tipoExamen = tipoExamen;
+        Examen_Controller controller = new Examen_Controller();
+
+        Map<String, Object> datosExamen = controller.obtenerPreguntasYRespuestas(tipoExamen);
+
+        this.listapreguntas = (List<PreguntaModel>) datosExamen.get("preguntas");
+
+        this.maparespuestas = (Map<Integer, List<RespuestaModel>>) datosExamen.get("respuestas");
+        System.out.println("Preguntas obtenidas: " + listapreguntas.size());
+
+
+
+
         this.nombre = nombre;
         initComponents();
         this.preguntaActualIndex = 0;
@@ -87,6 +102,8 @@ public class Examen_Form extends javax.swing.JFrame {
     private void finalizarExamen() {
         LabelPregunta.setText("Examen finalizado");
         System.out.println(this.respuestasUsuario);
+        Examen_Controller controller = new Examen_Controller();
+        float resultado = controller.guardarExamen(this.tipoExamen ,this.respuestasUsuario, this.listapreguntas);
         
     }
 

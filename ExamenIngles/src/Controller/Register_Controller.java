@@ -38,6 +38,7 @@ public class Register_Controller {
             if(nombre != null) {
                 JOptionPane.showMessageDialog(null, nombre + " logueado correctamente");
                 IDManager.getInstance().setIdUsuario(id);
+                IDManager.getInstance().setNombre_usuario(nombre);
                 return nombre;
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid credentials");

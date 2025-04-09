@@ -47,7 +47,6 @@ CREATE TABLE IF NOT EXISTS examen_ingles_respuesta_pregunta (
 
 
 CREATE TABLE IF NOT EXISTS examen_ingles_respuesta_usuario (
-    id_respuesta_usuario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_examen INT NOT NULL,
     id_pregunta INT NOT NULL,
     id_respuesta_pregunta INT NOT NULL,

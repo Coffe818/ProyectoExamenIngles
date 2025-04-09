@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import ConnectionPkg.Conexion;
 import Vista.Examen_Form;
+import util.IDManager;
 import util.PreguntaModel;
 import util.RespuestaModel;
 
@@ -114,38 +115,88 @@ public class Examen_Controller {
         return resultado;
     }
 
-    // Prueba
-    @SuppressWarnings("unchecked")
-    public static void main(String[] args) {
-        Examen_Controller controller = new Examen_Controller();
-        int tipoExamen = 1;
-        String nombre = "José M.";
-        Map<String, Object> datosExamen = controller.obtenerPreguntasYRespuestas(tipoExamen);
+    public float guardarExamen(int tipoExamen, Map<Integer, Integer> respuestasUsuario,
+            List<PreguntaModel> listapreguntas) {
+        Conexion conexion = new Conexion();
+        ResultadoExamen resultadoExamen = CalificarExamen(respuestasUsuario, listapreguntas);
+        try {
+            conexion.prepareCall("spExamenInblesInsertExamen", 5);
+            conexion.addInParameter("_id_usuario", IDManager.getInstance().getIdUsuario());
+            conexion.addInParameter("_tipo_examen", tipoExamen);
+            conexion.addInParameter("_calificacion", resultadoExamen.getCalificacion());
+            conexion.addInParameter("_nivel_ingles", resultadoExamen.getNivel());
+            conexion.addOutParameter("id_examen", java.sql.Types.INTEGER);
+            conexion.execute();
 
-        List<PreguntaModel> preguntas = (List<PreguntaModel>) datosExamen.get("preguntas");
-        Map<Integer, List<RespuestaModel>> respuestas = (Map<Integer, List<RespuestaModel>>) datosExamen
-                .get("respuestas");
-
-        System.out.println("Preguntas obtenidas: " + preguntas.size());
-
-        int i = 0;
-        for (PreguntaModel p : preguntas) {
-            i++;
-            System.out.println(i + " - " + p);
-            List<RespuestaModel> rList = respuestas.get(p.id);
-            if (rList != null) {
-                for (RespuestaModel r : rList) {
-                    System.out.println("   - " + r);
-                }
-            } else {
-                System.out.println("   !!! No hay respuestas para esta pregunta en el mapa !!!");
+            Integer id_examen = conexion.getOutParameter("id_examen", Integer.class);
+            IDManager.getInstance().setId_examen(id_examen);
+            System.out.println("ID del examen guardado: " + id_examen);
+            for (Map.Entry<Integer, Integer> respuesta : respuestasUsuario.entrySet()) {
+                conexion.prepareCall("spExamenInglesInsertRespuestaUsuario", 3);
+                conexion.addInParameter("_id_examen", IDManager.getInstance().getId_examen());
+                conexion.addInParameter("_id_pregunta", respuesta.getKey());
+                conexion.addInParameter("_id_respuesta_pregunta", respuesta.getValue());
+                conexion.execute();
             }
-            System.out.println();
+            System.out.println("con una calificacion de  " + resultadoExamen.getCalificacion()
+                    + " y un nivel de " + resultadoExamen.getNivel());
+
+
+        } catch (Exception e) {
+            System.err.println("Error al guardar el examen: " + e.getMessage());
+        } finally {
+            conexion.closeConnection();
         }
-        ;
+  
+        return resultadoExamen.getCalificacion();
+    }
 
-        Examen_Form examen = new Examen_Form(preguntas, respuestas, nombre);
-        examen.setVisible(true);
+    public class ResultadoExamen {
+        private float calificacion;
+        private String nivel;
 
+        public ResultadoExamen(float calificacion, String nivel) {
+            this.calificacion = calificacion;
+            this.nivel = nivel;
+        }
+
+        public float getCalificacion() {
+            return calificacion;
+        }
+
+        public String getNivel() {
+            return nivel;
+        }
+    }
+
+    private ResultadoExamen CalificarExamen(Map<Integer, Integer> respuestasUsuario,
+            List<PreguntaModel> listapreguntas) {
+        if (respuestasUsuario == null || listapreguntas == null || respuestasUsuario.isEmpty()
+                || listapreguntas.isEmpty()) {
+            return new ResultadoExamen(0, "No se ha calificado el examen.");
+        }
+
+        int respuestasCorrectas = 0;
+        int totalPreguntas = listapreguntas.size();
+
+        for (PreguntaModel pregunta : listapreguntas) {
+            Integer respuestaUsuario = respuestasUsuario.get(pregunta.id);
+            if (respuestaUsuario != null && respuestaUsuario.equals(pregunta.idRespuestaCorrecta)) {
+                respuestasCorrectas++;
+            }
+        }
+
+        float calificacion = (float) respuestasCorrectas / totalPreguntas * 100;
+
+        String nivel;
+        if (calificacion >= 90) {
+            nivel = "Avanzado";
+        } else if (calificacion >= 60) {
+            nivel = "Intermedio";
+        } else {
+            nivel = "Basico";
+        }
+
+        return new ResultadoExamen(calificacion, nivel);
     }
 }
