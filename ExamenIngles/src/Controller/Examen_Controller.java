@@ -117,7 +117,7 @@ public class Examen_Controller {
     public float guardarExamen(int tipoExamen, Map<Integer, Integer> respuestasUsuario,
             List<PreguntaModel> listapreguntas) {
         Conexion conexion = new Conexion();
-        ResultadoExamen resultadoExamen = CalificarExamen(respuestasUsuario, listapreguntas);
+        ResultadoExamen resultadoExamen = CalificarExamen(tipoExamen,respuestasUsuario, listapreguntas);
         try {
             conexion.prepareCall("spExamenInblesInsertExamen", 5);
             conexion.addInParameter("_id_usuario", IDManager.getInstance().getIdUsuario());
@@ -135,6 +135,10 @@ public class Examen_Controller {
                 conexion.addInParameter("_id_examen", IDManager.getInstance().getId_examen());
                 conexion.addInParameter("_id_pregunta", respuesta.getKey());
                 conexion.addInParameter("_id_respuesta_pregunta", respuesta.getValue());
+                System.out.println("spExamenInglesInsertRespuestaUsuario");
+                System.out.println("_id_examen: " + IDManager.getInstance().getId_examen());
+                System.out.println("_id_pregunta: " + respuesta.getKey());
+                System.out.println("_id_respuesta_pregunta: " + respuesta.getValue());
                 conexion.execute();
             }
             System.out.println("con una calificacion de  " + resultadoExamen.getCalificacion()
@@ -168,7 +172,7 @@ public class Examen_Controller {
         }
     }
 
-    private ResultadoExamen CalificarExamen(Map<Integer, Integer> respuestasUsuario,
+    private ResultadoExamen CalificarExamen(int tipoExamen,Map<Integer, Integer> respuestasUsuario,
             List<PreguntaModel> listapreguntas) {
         if (respuestasUsuario == null || listapreguntas == null || respuestasUsuario.isEmpty()
                 || listapreguntas.isEmpty()) {
@@ -184,8 +188,13 @@ public class Examen_Controller {
                 respuestasCorrectas++;
             }
         }
-
-        float calificacion = (float) respuestasCorrectas / totalPreguntas * 100;
+        float calificacion = 0;
+        if (tipoExamen ==1){
+           calificacion = (float) respuestasCorrectas *5;
+        }
+        else if (tipoExamen ==2){
+            calificacion = (float) respuestasCorrectas *(5/2);
+        }
 
         String nivel;
         if (calificacion >= 90) {

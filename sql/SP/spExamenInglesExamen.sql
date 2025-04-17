@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS spExamenInblesInsertExamen
 CREATE PROCEDURE spExamenInblesInsertExamen(IN _id_usuario INT, IN _tipo_examen VARCHAR(500), IN _calificacion FLOAT, IN _nivel_ingles VARCHAR(500), OUT id_examen INT)
 BEGIN
     insert into examen_ingles_examen(id_usuario, fecha, tipo_examen, calificacion, nivel_ingles) values (_id_usuario, now(), _tipo_examen,_calificacion, _nivel_ingles);
-    SELECT LAST_INSERT_ID() as id_examen;
+    SET id_examen = LAST_INSERT_ID();
 
     CALL spExamenInglesUpdateUsuarioNivelIngles(_id_usuario, _nivel_ingles);
 END;
