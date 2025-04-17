@@ -1,5 +1,7 @@
 package ConnectionPkg;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.*;
 
 public class Conexion {
@@ -116,6 +118,36 @@ public class Conexion {
 
         }
     }
+
+    public void resetAll() {
+    String[] scripts = { "sql\\Tables\\tables.sql", "sql\\Data\\preguntas_respuestas.sql" }; // Aquí defines los scripts a ejecutar
+
+    for (String script : scripts) {
+        try (
+            BufferedReader br = new BufferedReader(new FileReader(script));
+            Statement stmt = cnx.createStatement()
+        ) {
+            StringBuilder sb = new StringBuilder();
+            String linea;
+
+            while ((linea = br.readLine()) != null) {
+                sb.append(linea).append("\n");
+
+                if (linea.trim().endsWith(";")) {
+                    String sql = sb.toString().trim();
+                    stmt.execute(sql);
+                    sb.setLength(0); // Limpia el buffer
+                }
+            }
+
+            System.out.println("Script ejecutado correctamente: " + script);
+
+        } catch (Exception e) {
+            System.err.println("Error al ejecutar el script " + script + ": " + e.getMessage());
+        }
+    }
+}
+
 
    
 }

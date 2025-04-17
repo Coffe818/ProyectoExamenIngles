@@ -2026,6 +2026,99 @@ CREATE TEMPORARY TABLE  IF NOT EXISTS temp_respuestas (
         
 
         TRUNCATE temp_respuestas  ;
+
+                -- Pregunta 76 
+        INSERT INTO examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        SELECT 76, '____________ the complexity of the subject, the professor explained it with remarkable clarity.', 'Advanced'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_pregunta 
+            WHERE id_pregunta = 76
+        );
+        
+        -- Respuestas para la pregunta 76
+        INSERT INTO temp_respuestas (texto_respuesta, es_correcta)
+        VALUES ('However', 0), ('Despite', 1), ('Although', 0), ('Nevertheless', 0);
+
+        INSERT INTO examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
+        SELECT 76, texto_respuesta, es_correcta
+        FROM temp_respuestas;
+        
+        TRUNCATE temp_respuestas;
+
+        -- Pregunta 77 
+        INSERT INTO examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        SELECT 77, 'Seldom _________ such a breathtaking performance in this theater.', 'Advanced'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_pregunta 
+            WHERE id_pregunta = 77
+        );
+        
+        -- Respuestas para la pregunta 77
+        INSERT INTO temp_respuestas (texto_respuesta, es_correcta)
+        VALUES ('we have seen', 0), ('have we seen', 1), ('we saw', 0), ('did we see', 0);
+
+        INSERT INTO examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
+        SELECT 77, texto_respuesta, es_correcta
+        FROM temp_respuestas;
+        
+        TRUNCATE temp_respuestas;
+
+        -- Pregunta 78 
+        INSERT INTO examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        SELECT 78, 'Were the negotiations _________, the company would have avoided bankruptcy.', 'Advanced'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_pregunta 
+            WHERE id_pregunta = 78
+        );
+        
+        -- Respuestas para la pregunta 78
+        INSERT INTO temp_respuestas (texto_respuesta, es_correcta)
+        VALUES ('to succeed', 0), ('succeeded', 0), ('to have succeeded', 1), ('having succeeded', 0);
+
+        INSERT INTO examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
+        SELECT 78, texto_respuesta, es_correcta
+        FROM temp_respuestas;
+        
+        TRUNCATE temp_respuestas;
+
+        -- Pregunta 79
+        INSERT INTO examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        SELECT 79, 'The manuscript, _________ by a 15th-century monk, was discovered in the monastery archives.', 'Advanced'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_pregunta 
+            WHERE id_pregunta = 79
+        );
+        
+        -- Respuestas para la pregunta 79
+        INSERT INTO temp_respuestas (texto_respuesta, es_correcta)
+        VALUES ('authored', 1), ('authoring', 0), ('having authored', 0), ('was authored', 0);
+
+        INSERT INTO examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
+        SELECT 79, texto_respuesta, es_correcta
+        FROM temp_respuestas;
+        
+        TRUNCATE temp_respuestas;
+
+        -- Pregunta 80 
+        INSERT INTO examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        SELECT 80, 'Not until the final chapter _________ the true identity of the mysterious benefactor.', 'Advanced'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM examen_ingles_pregunta 
+            WHERE id_pregunta = 80
+        );
+        
+        -- Respuestas para la pregunta 80
+        INSERT INTO temp_respuestas (texto_respuesta, es_correcta)
+        VALUES ('the reader discovers', 0), ('does the reader discover', 1), ('the reader does discover', 0), ('discovers the reader', 0);
+
+        INSERT INTO examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
+        SELECT 80, texto_respuesta, es_correcta
+        FROM temp_respuestas;
+        
+        TRUNCATE temp_respuestas;
+
+        insert into examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
+        VALUES(1,"respuesta incorrecta",0);
         
 
 DROP TABLE  temp_respuestas;

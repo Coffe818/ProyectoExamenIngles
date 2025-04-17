@@ -135,10 +135,6 @@ public class Examen_Controller {
                 conexion.addInParameter("_id_examen", IDManager.getInstance().getId_examen());
                 conexion.addInParameter("_id_pregunta", respuesta.getKey());
                 conexion.addInParameter("_id_respuesta_pregunta", respuesta.getValue());
-                System.out.println("spExamenInglesInsertRespuestaUsuario");
-                System.out.println("_id_examen: " + IDManager.getInstance().getId_examen());
-                System.out.println("_id_pregunta: " + respuesta.getKey());
-                System.out.println("_id_respuesta_pregunta: " + respuesta.getValue());
                 conexion.execute();
             }
             System.out.println("con una calificacion de  " + resultadoExamen.getCalificacion()
