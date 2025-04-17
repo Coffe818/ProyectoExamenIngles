@@ -38,7 +38,7 @@ public class Examen_Form extends javax.swing.JFrame {
     
 
     @SuppressWarnings("unchecked")
-    public Examen_Form(String nombre, int tipoExamen) {
+    public Examen_Form(int tipoExamen) {
         this.tipoExamen = tipoExamen;
         Examen_Controller controller = new Examen_Controller();
 
@@ -52,7 +52,7 @@ public class Examen_Form extends javax.swing.JFrame {
 
 
 
-        this.nombre = nombre;
+        this.nombre = IDManager.getInstance().getNombre_usuario();
         initComponents();
         this.preguntaActualIndex = 0;
         LabelNombre.setText(this.nombre);

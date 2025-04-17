@@ -1,0 +1,49 @@
+@startuml  examen de ingles
+
+entity examen_ingles_usuario {
+    * id_usuario : INT <<PK>>
+    --
+    nombre : VARCHAR(500)
+    email : VARCHAR(500)
+    contrasena : VARCHAR(500)
+    nivel_ingles : VARCHAR(500)
+}
+
+entity examen_ingles_examen {
+    * id_examen : INT <<PK>>
+    --
+    id_usuario : INT <<FK>>
+    fecha : DATETIME
+    tipo_examen : VARCHAR(500)
+    calificacion : FLOAT
+    nivel_ingles : VARCHAR(500)
+}
+
+entity examen_ingles_pregunta {
+    * id_pregunta : INT <<PK>>
+    --
+    texto_pregunta : VARCHAR(500)
+    nivel_ingles : VARCHAR(500)
+}
+
+entity examen_ingles_respuesta_pregunta {
+    * id_respuesta_pregunta : INT <<PK>>
+    --
+    id_pregunta : INT <<FK>>
+    texto_respuesta : VARCHAR(500)
+    es_correcta : TINYINT(1)
+}
+
+entity examen_ingles_respuesta_usuario {
+    * id_examen : INT <<FK>>
+    * id_pregunta : INT <<FK>>
+    * id_respuesta_pregunta : INT <<FK>>
+}
+
+examen_ingles_usuario ||--o{ examen_ingles_examen : realiza
+examen_ingles_examen ||--o{ examen_ingles_respuesta_usuario : contiene
+examen_ingles_pregunta ||--o{ examen_ingles_respuesta_pregunta : tiene
+examen_ingles_pregunta ||--o{ examen_ingles_respuesta_usuario : responde
+examen_ingles_respuesta_pregunta ||--o{ examen_ingles_respuesta_usuario : selecciona
+
+@enduml

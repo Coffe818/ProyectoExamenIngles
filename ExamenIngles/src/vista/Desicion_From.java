@@ -100,7 +100,7 @@ public class Desicion_From extends javax.swing.JFrame {
             tipo = 3;
         } 
         if(tipo==1 || tipo==2){
-            Examen_Form examen = new Examen_Form(IDManager.getInstance().getNombre_usuario(), tipo);
+            Examen_Form examen = new Examen_Form(tipo);
             examen.setVisible(true);
             this.dispose();
         }
