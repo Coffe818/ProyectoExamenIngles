@@ -117,7 +117,7 @@ public class Examen_Controller {
     public float guardarExamen(int tipoExamen, Map<Integer, Integer> respuestasUsuario,
             List<PreguntaModel> listapreguntas) {
         Conexion conexion = new Conexion();
-        ResultadoExamen resultadoExamen = CalificarExamen(tipoExamen,respuestasUsuario, listapreguntas);
+        ResultadoExamen resultadoExamen = CalificarExamen(tipoExamen, respuestasUsuario, listapreguntas);
         try {
             conexion.prepareCall("spExamenInblesInsertExamen", 5);
             conexion.addInParameter("_id_usuario", IDManager.getInstance().getIdUsuario());
@@ -140,13 +140,12 @@ public class Examen_Controller {
             System.out.println("con una calificacion de  " + resultadoExamen.getCalificacion()
                     + " y un nivel de " + resultadoExamen.getNivel());
 
-
         } catch (Exception e) {
             System.err.println("Error al guardar el examen: " + e.getMessage());
         } finally {
             conexion.closeConnection();
         }
-  
+
         return resultadoExamen.getCalificacion();
     }
 
@@ -168,7 +167,7 @@ public class Examen_Controller {
         }
     }
 
-    private ResultadoExamen CalificarExamen(int tipoExamen,Map<Integer, Integer> respuestasUsuario,
+    private ResultadoExamen CalificarExamen(int tipoExamen, Map<Integer, Integer> respuestasUsuario,
             List<PreguntaModel> listapreguntas) {
         if (respuestasUsuario == null || listapreguntas == null || respuestasUsuario.isEmpty()
                 || listapreguntas.isEmpty()) {
@@ -185,22 +184,63 @@ public class Examen_Controller {
             }
         }
         float calificacion = 0;
-        if (tipoExamen ==1){
-           calificacion = (float) respuestasCorrectas *5;
-        }
-        else if (tipoExamen ==2){
-            calificacion = (float) respuestasCorrectas *(5/2);
+        if (tipoExamen == 1) {
+            calificacion = (float) respuestasCorrectas * 5;
+        } else if (tipoExamen == 2) {
+            calificacion = (float) respuestasCorrectas * (5 / 2);
         }
 
-        String nivel;
-        if (calificacion >= 90) {
-            nivel = "Avanzado";
-        } else if (calificacion >= 60) {
-            nivel = "Intermedio";
-        } else {
-            nivel = "Basico";
-        }
+        String nivel = determinarNivel(calificacion);
+        
 
         return new ResultadoExamen(calificacion, nivel);
+    }
+
+    public Map<String, Object> datosDashBoard(int _id_usuario){
+        Map<String, Object> resultados = new HashMap<>();
+        Conexion conexion = new Conexion();
+        try{
+            conexion.prepareCall("spExamenInblesGetExamenByUsuario", 1);
+            conexion.addInParameter("_id_usuario", _id_usuario);
+            ResultSet rs = conexion.executeResultSet();
+
+            double sumaCalificaciones = 0;
+            int cantidadExamenes = 0;
+
+            while (rs != null && rs.next()) {
+                double calificacion = rs.getDouble("calificacion");
+                sumaCalificaciones += calificacion;
+                cantidadExamenes++;
+            }
+            
+            
+            if (cantidadExamenes > 0) {
+                double promedio = sumaCalificaciones / cantidadExamenes;
+                String nivel = determinarNivel(promedio);
+                
+                resultados.put("promedio", promedio);
+                resultados.put("nivel", nivel);
+                resultados.put("cantidadExamenes", cantidadExamenes);
+            }
+            
+            return resultados;
+            
+        }catch (Exception e){
+            System.err.println("Error al obtener datos del dashboard: " + e.getMessage());
+            return null;
+        }finally {
+            conexion.closeConnection();
+        }
+
+    }
+
+    private String determinarNivel(double calificacion) {
+        if (calificacion >= 90) {
+            return "Avanzado";
+        } else if (calificacion >= 60) {
+            return "Intermedio";
+        } else {
+            return "Básico";
+        }
     }
 }

@@ -36,7 +36,7 @@ public class Register_Controller {
             }
 
             if(nombre != null) {
-                JOptionPane.showMessageDialog(null, nombre + " logueado correctamente");
+                // JOptionPane.showMessageDialog(null, nombre + " logueado correctamente");
                 IDManager.getInstance().setIdUsuario(id);
                 IDManager.getInstance().setNombre_usuario(nombre);
                 return nombre;
@@ -66,7 +66,7 @@ public class Register_Controller {
             
             con.execute();
             Integer id_usuario = con.getOutParameter("id_usuario", Integer.class); 
-            JOptionPane.showMessageDialog(null, "Usuario" + id_usuario + " insertado correctamente");
+            //JOptionPane.showMessageDialog(null, "Usuario " + name + " insertado correctamente");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al insertar usuario: " + e.getMessage());
         } finally {

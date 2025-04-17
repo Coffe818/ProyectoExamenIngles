@@ -54,3 +54,7 @@ CREATE TABLE IF NOT EXISTS examen_ingles_respuesta_usuario (
     FOREIGN KEY (id_pregunta) REFERENCES examen_ingles_pregunta (id_pregunta),
     FOREIGN KEY (id_respuesta_pregunta) REFERENCES examen_ingles_respuesta_pregunta (id_respuesta_pregunta)
 );
+
+select u.nombre, u.email, u.contrasena, u.nivel_ingles, e.calificacion from examen_ingles_usuario u 
+JOIN examen_ingles_examen e ON u.id_usuario = e.id_usuario
+where e.calificacion >= 50;

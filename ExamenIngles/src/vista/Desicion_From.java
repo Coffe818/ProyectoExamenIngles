@@ -104,6 +104,11 @@ public class Desicion_From extends javax.swing.JFrame {
             examen.setVisible(true);
             this.dispose();
         }
+        if(tipo==3){
+            VentanaConGrafica dash = new VentanaConGrafica();
+            dash.setVisible(true);
+            this.dispose();
+        }
     }//GEN-LAST:event_ButtonSeleccionarActionPerformed
 
     /**
