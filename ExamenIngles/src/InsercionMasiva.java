@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
+// import javax.swing.JOptionPane;
 
 import ConnectionPkg.Conexion;
 import Controller.Examen_Controller;
@@ -20,7 +20,7 @@ public class InsercionMasiva {
         con.resetAll();
         
         int i = 0;
-        while (i<200) {
+        while (i<20) {
             
             String email = "correo" + i + "@gmail.com";
             String password = "password " + i;
@@ -67,7 +67,7 @@ public class InsercionMasiva {
                 Map<Integer, Integer> respuestasUsuario = new HashMap<>();
 
                 //se genera el examen
-                Map<String, Object> datosExamen = examen.obtenerPreguntasYRespuestas(1);
+                Map<String, Object> datosExamen = examen.obtenerPreguntasYRespuestas(tipoExamen);
                 @SuppressWarnings("unchecked")
                 List<PreguntaModel>listapreguntas = (List<PreguntaModel>) datosExamen.get("preguntas");
                 
@@ -79,29 +79,14 @@ public class InsercionMasiva {
                 System.out.println(maparespuestas);
 
                 for(PreguntaModel pregunta : listapreguntas) {
-                    System.out.println("Pregunta: " + pregunta.texto);
+                    System.out.println("\nPregunta: " + pregunta.texto);
                     List<RespuestaModel> respuestas = maparespuestas.get(pregunta.id);
                     System.out.println("Respuestas" + respuestas);
 
                     int respuestasRamdon = (int) (Math.random() * 4);
-                    switch (respuestasRamdon) {
-                        case 0:
-                            System.out.println("Respuesta seleccionada: " + respuestas.get(0).texto);
-                            respuestasUsuario.put(pregunta.id, respuestas.get(0).id);
-                            break;
-                        case 1:
-                            System.out.println("Respuesta seleccionada: " + respuestas.get(1).texto);
-                            respuestasUsuario.put(pregunta.id, respuestas.get(1).id);
-                            break;
-                        case 2:
-                            System.out.println("Respuesta seleccionada: " + respuestas.get(2).texto);
-                            respuestasUsuario.put(pregunta.id, respuestas.get(2).id);
-                            break;
-                        case 3:
-                            System.out.println("Respuesta seleccionada: " + respuestas.get(3).texto);
-                            respuestasUsuario.put(pregunta.id, respuestas.get(3).id);
-                            break;
-                    }
+                    System.out.println("Respuesta seleccionada: " + respuestas.get(respuestasRamdon).texto);
+                    respuestasUsuario.put(pregunta.id, respuestas.get(respuestasRamdon).id);
+        
                 }
                 examen.guardarExamen(tipoExamen, respuestasUsuario, listapreguntas);
 

@@ -120,7 +120,7 @@ public class Conexion {
     }
 
     public void resetAll() {
-    String[] scripts = { "sql\\Tables\\tables.sql", "sql\\Data\\preguntas_respuestas.sql" }; // Aquí defines los scripts a ejecutar
+    String[] scripts = { "sql\\Tables\\tables.sql", "sql\\Data\\preguntas_respuestas.sql" }; 
 
     for (String script : scripts) {
         try (
@@ -136,7 +136,7 @@ public class Conexion {
                 if (linea.trim().endsWith(";")) {
                     String sql = sb.toString().trim();
                     stmt.execute(sql);
-                    sb.setLength(0); // Limpia el buffer
+                    sb.setLength(0); 
                 }
             }
 

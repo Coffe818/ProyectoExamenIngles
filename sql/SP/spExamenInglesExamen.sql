@@ -14,3 +14,14 @@ CREATE PROCEDURE spExamenInblesGetExamenByUsuario(IN _id_usuario INT)
 BEGIN
     select * from examen_ingles_examen where id_usuario = _id_usuario;
 END;
+
+DROP PROCEDURE IF EXISTS spExamenInglescantidadExamenesPorUsuario;
+
+CREATE PROCEDURE spExamenInglescantidadExamenesPorUsuario(IN _id_usuario INT, OUT _prueba INT, OUT _final INT)
+BEGIN
+    select COUNT(CASE WHEN tipo_examen = 1 THEN 1 END) INTO _prueba from examen_ingles_examen where id_usuario = _id_usuario;
+    select COUNT(CASE WHEN tipo_examen = 2 THEN 1 END) INTO _final from examen_ingles_examen where id_usuario = _id_usuario;
+END;
+
+call spExamenInglescantidadExamenesPorUsuario(15, @prueba, @final);
+SELECT @prueba, @final;

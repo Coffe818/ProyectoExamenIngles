@@ -104,6 +104,9 @@ public class Examen_Form extends javax.swing.JFrame {
         System.out.println(this.respuestasUsuario);
         Examen_Controller controller = new Examen_Controller();
         float resultado = controller.guardarExamen(this.tipoExamen ,this.respuestasUsuario, this.listapreguntas);
+        Desicion_From desicion = new Desicion_From();
+        desicion.setVisible(true);
+        this.dispose();
         
     }
 
@@ -113,7 +116,7 @@ public class Examen_Form extends javax.swing.JFrame {
         
         
         
-        int respuestaSeleccionadaId = -1;
+        int respuestaSeleccionadaId = 561;
         if (RadioButtonRespuesta1.isSelected()) {
             respuestaSeleccionadaId = respuestas.get(0).id;
         } else if (RadioButtonRespuesta2.isSelected()) {

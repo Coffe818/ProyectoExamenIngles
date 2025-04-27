@@ -4,6 +4,12 @@
  */
 package Vista;
 
+import java.util.Map;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import Controller.Examen_Controller;
 import util.IDManager;
 
 /**
@@ -18,6 +24,19 @@ public class Desicion_From extends javax.swing.JFrame {
     public Desicion_From() {
         initComponents();
         LabelNombre.setText(IDManager.getInstance().getNombre_usuario());
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                regresarADesicionForm();
+            }
+        });
+    }
+    private void regresarADesicionForm() {
+        Login_Form login = new Login_Form();
+        login.setVisible(true);
+        this.dispose();
     }
 
     /**
@@ -91,25 +110,51 @@ public class Desicion_From extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ButtonSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {
-        int tipo = -1;
-        if (RadioButtonOpcion1.isSelected()) {
-            tipo = 1;
-        } else if (RadioButtonOpcion2.isSelected()) {
-            tipo = 2;
-        } else if (RadioButtonOpcion3.isSelected()) {
-            tipo = 3;
-        } 
-        if(tipo==1 || tipo==2){
-            Examen_Form examen = new Examen_Form(tipo);
-            examen.setVisible(true);
-            this.dispose();
+    int tipo = -1;
+    Examen_Controller controller = new Examen_Controller();
+    if (RadioButtonOpcion1.isSelected()) {
+        tipo = 1; // Examen de prueba
+    } else if (RadioButtonOpcion2.isSelected()) {
+        tipo = 2; // Examen final
+    } else if (RadioButtonOpcion3.isSelected()) {
+        tipo = 3; // Dashboard
+    }
+    
+    if(tipo == -1) {
+        JOptionPane.showMessageDialog(this, "Seleccione una opción", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    if(tipo == 1 || tipo == 2) {
+        Map<String, Boolean> permisos = controller.presentarExamen(IDManager.getInstance().getIdUsuario()); 
+        
+        if(tipo == 1 && !permisos.get("puedePresentarPrueba")) {
+            JOptionPane.showMessageDialog(this, 
+                "Ya has alcanzado el limite de 5 examenes de prueba", 
+                "limite alcanzado", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        if(tipo==3){
-            VentanaConGrafica dash = new VentanaConGrafica();
-            dash.setVisible(true);
-            this.dispose();
+        
+        if(tipo == 2 && !permisos.get("puedePresentarFinal")) {
+            JOptionPane.showMessageDialog(this, 
+                "Ya has alcanzado el limite de 2 examenes finales", 
+                "limite alcanzado", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }//GEN-LAST:event_ButtonSeleccionarActionPerformed
+        
+        Examen_Form examen = new Examen_Form(tipo);
+        examen.setVisible(true);
+        this.dispose();
+    }
+    else if(tipo == 3) {
+        VentanaConGrafica dash = new VentanaConGrafica();
+        dash.setVisible(true);
+        this.dispose();
+    }
+}//GEN-LAST:event_ButtonSeleccionarActionPerformed
+
 
     /**
      * @param args the command line arguments

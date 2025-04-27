@@ -35,7 +35,7 @@ class Configuracion {
 }
 
 public class Examen_Controller {
-    List<Configuracion> ExamenPrueba = Arrays.asList(
+    List<Configuracion> ExamenPrueba = Arrays.asList( //1
             new Configuracion(2, 1, 10),
             new Configuracion(3, 11, 25),
             new Configuracion(3, 26, 40),
@@ -43,7 +43,7 @@ public class Examen_Controller {
             new Configuracion(4, 61, 70),
             new Configuracion(4, 71, 75));
 
-    List<Configuracion> Examenfinal = Arrays.asList(
+    List<Configuracion> Examenfinal = Arrays.asList(//2
             new Configuracion(4, 1, 10),
             new Configuracion(6, 11, 25),
             new Configuracion(6, 26, 40),
@@ -241,6 +241,31 @@ public class Examen_Controller {
             return "Intermedio";
         } else {
             return "Básico";
+        }
+    }
+
+    public Map<String, Boolean>  presentarExamen(int _id_usuario){
+        Map<String, Boolean> resultado = new HashMap<>();
+        Conexion conexion = new Conexion();
+        try {
+            conexion.prepareCall("spExamenInglescantidadExamenesPorUsuario", 3);
+            conexion.addInParameter("_id_usuario", _id_usuario);
+            conexion.addOutParameter("_prueba", java.sql.Types.INTEGER);
+            conexion.addOutParameter("_final", java.sql.Types.INTEGER);
+            conexion.execute();
+
+            int cantidadPrueba = conexion.getOutParameter("_prueba", Integer.class);
+            int cantidadFinal = conexion.getOutParameter("_final", Integer.class);
+
+            resultado.put("puedePresentarPrueba", cantidadPrueba < 5);
+            resultado.put("puedePresentarFinal", cantidadFinal < 2);
+
+            return resultado;
+        } catch (Exception e) {
+            System.err.println("Error al presentar el examen: " + e.getMessage());
+            return null;
+        } finally {
+            conexion.closeConnection();
         }
     }
 }

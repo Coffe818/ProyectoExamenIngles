@@ -2117,8 +2117,12 @@ CREATE TEMPORARY TABLE  IF NOT EXISTS temp_respuestas (
         
         TRUNCATE temp_respuestas;
 
+        -- Pregunta y respuesta que se setea por defecto para el test 
+        -- la id respuesta es 561
+        insert into examen_ingles_pregunta (id_pregunta, texto_pregunta, nivel_ingles)
+        values (99, "pregunta para respuesta incorrecta", "prueba");
         insert into examen_ingles_respuesta_pregunta (id_pregunta, texto_respuesta, es_correcta)
-        VALUES(1,"respuesta incorrecta",0);
+        VALUES(99,"no contesto el usuario",0);
         
 
 DROP TABLE  temp_respuestas;
@@ -2127,3 +2131,20 @@ DROP TABLE  temp_respuestas;
 select p.id_pregunta, pr.id_respuesta_pregunta, p.texto_pregunta, pr.texto_respuesta, pr.es_correcta, p.nivel_ingles from examen_ingles_pregunta p  join examen_ingles_respuesta_pregunta pr on p.id_pregunta = pr.id_pregunta ORDER BY p.id_pregunta, pr.id_respuesta_pregunta;
 
 SELECT * FROM examen_ingles_pregunta;
+
+--sript para asegurar que todo se califica bien
+-- select U.nombre, E.id_examen, E.tipo_examen, P.texto_pregunta, PR.id_respuesta_pregunta,PR.texto_respuesta ,PR.es_correcta, RU.id_respuesta_pregunta from examen_ingles_usuario U 
+-- join examen_ingles_examen E on U.id_usuario = E.id_usuario
+-- join examen_ingles_respuesta_usuario RU on RU.id_examen = E.id_examen
+-- join examen_ingles_pregunta P on P.id_pregunta = RU.id_pregunta
+-- join examen_ingles_respuesta_pregunta PR on P.id_pregunta = PR.id_pregunta 
+-- where U.id_usuario = 20 
+-- -- and  e.id_examen=89 
+-- -- and PR.es_correcta=1 
+-- -- and PR.id_respuesta_pregunta = RU.id_respuesta_pregunta
+-- ORDER BY U.nombre, E.id_examen, P.id_pregunta
+
+
+--select * from examen_ingles_examen where id_examen = 89;
+
+select * from examen_ingles_usuario

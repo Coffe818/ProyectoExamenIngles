@@ -66,11 +66,16 @@ public class VentanaConGrafica extends JFrame {
 
     public VentanaConGrafica() {
         setSize(400, 350);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centra la ventana
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLocationRelativeTo(null); 
         setLayout(new BorderLayout());
 
-
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                regresarADesicionForm();
+            }
+        });
 
 
         // Label superior
@@ -108,6 +113,11 @@ public class VentanaConGrafica extends JFrame {
 
         cargarDatosDashboard(IDManager.getInstance().getIdUsuario());
         
+    }
+    private void regresarADesicionForm() {
+        Desicion_From desicion = new Desicion_From();
+        desicion.setVisible(true);
+        this.dispose();
     }
 
     private void cargarDatosDashboard(int idUsuario) {
