@@ -10,9 +10,23 @@ END;
 
 DROP PROCEDURE IF EXISTS spExamenInblesGetExamenByUsuario;
 
-CREATE PROCEDURE spExamenInblesGetExamenByUsuario(IN _id_usuario INT)
+CREATE PROCEDURE spExamenInblesGetExamenByUsuario(IN _id_usuario INT, out _calificacion_tipo1 FLOAT, out _calificacion_tipo2 FLOAT, OUT _cantidad_examenes_tipo1 INT, OUT _cantidad_examenes_tipo2 INT)
 BEGIN
     select * from examen_ingles_examen where id_usuario = _id_usuario;
+
+    SELECT
+        COALESCE(SUM(CASE WHEN tipo_examen = 1 THEN calificacion END), 0),
+        COALESCE(SUM(CASE WHEN tipo_examen = 2 THEN calificacion END), 0),
+        COALESCE(COUNT(CASE WHEN tipo_examen = 1 THEN 1 END),0),
+        COALESCE(COUNT(CASE WHEN tipo_examen = 2 THEN 1 END),0)
+    INTO
+        _calificacion_tipo1,
+        _calificacion_tipo2,
+        _cantidad_examenes_tipo1,
+        _cantidad_examenes_tipo2
+    FROM examen_ingles_examen
+    WHERE id_usuario = _id_usuario;
+
 END;
 
 DROP PROCEDURE IF EXISTS spExamenInglescantidadExamenesPorUsuario;

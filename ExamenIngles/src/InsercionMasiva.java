@@ -39,21 +39,18 @@ public class InsercionMasiva {
             }
 
             int cantidadExamenesPractica = (int) (Math.random() * maxCantidadExamenesPractica) + 1;
-            // JOptionPane.showMessageDialog(null, "Cantidad de examenes de practica: " + cantidadExamenesPractica);
+            
             for (int j = 0; j < cantidadExamenesPractica; j++) {
                 simularExamen(1);
-                // JOptionPane.showMessageDialog(null, "Examen de practica" + (j + 1) + " realizado del usuario: " + name);
+                
             }
 
             int cantidadExamenesFinal = (int) (Math.random() * maxCantidadExamenesFinal) + 1;
-            // JOptionPane.showMessageDialog(null, "Cantidad de examenes finales: " + cantidadExamenesFinal);
 
             for (int j = 0; j < cantidadExamenesFinal; j++) {
                 simularExamen(2);
-                // JOptionPane.showMessageDialog(null, "Examen de final" + (j + 1) + " realizado del usuario: " + name);
+                
             }
-
-            // JOptionPane.showMessageDialog(null, "se termino la insercion del usuario: " + name);
 
             i++;
         }
@@ -81,11 +78,34 @@ public class InsercionMasiva {
                 for(PreguntaModel pregunta : listapreguntas) {
                     System.out.println("\nPregunta: " + pregunta.texto);
                     List<RespuestaModel> respuestas = maparespuestas.get(pregunta.id);
-                    System.out.println("Respuestas" + respuestas);
+                    System.out.println("Respuestas:");
+                    for (RespuestaModel respuesta : respuestas) {
+                        System.out.println(respuesta.texto + " (ID: " + respuesta.id + ")");
+                    }
 
-                    int respuestasRamdon = (int) (Math.random() * 4);
-                    System.out.println("Respuesta seleccionada: " + respuestas.get(respuestasRamdon).texto);
-                    respuestasUsuario.put(pregunta.id, respuestas.get(respuestasRamdon).id);
+
+                    double probabilidad = Math.random();
+
+                    int respuestaSeleccionadaId;
+                    if (probabilidad < 1) {
+
+                        int respuestaCorrecta = examen.ObtenerRespuestaCorrecta(pregunta.id);
+                        if (respuestaCorrecta != -1) {
+                            respuestaSeleccionadaId = respuestaCorrecta;
+                            System.out.println("Respuesta correcta seleccionada: " + respuestaCorrecta);
+                        } else {
+                            System.out.println("Error: Respuesta correcta no encontrada.");
+                            continue;
+                        }
+                    } else {
+                        // Seleccionamos una respuesta aleatoria
+                        int respuestaRamdon = (int) (Math.random() * 4);
+                        RespuestaModel respuestaRamdonModel = respuestas.get(respuestaRamdon);
+                        respuestaSeleccionadaId = respuestaRamdonModel.id;
+                        System.out.println("Respuesta aleatoria seleccionada: " + respuestaRamdonModel.texto);
+                    }
+
+                    respuestasUsuario.put(pregunta.id, respuestaSeleccionadaId);
         
                 }
                 examen.guardarExamen(tipoExamen, respuestasUsuario, listapreguntas);

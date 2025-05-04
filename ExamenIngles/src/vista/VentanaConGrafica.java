@@ -9,9 +9,9 @@ import java.util.Map;
 
 
 class GraficaPorcentaje extends JPanel {
-    private int porcentaje = 0;
+    private float porcentaje = 0;
 
-    public void setPorcentaje(int porcentaje) {
+    public void setPorcentaje(float porcentaje) {
         this.porcentaje = porcentaje;
         repaint();
     }
@@ -58,14 +58,17 @@ class GraficaPorcentaje extends JPanel {
 
 
 public class VentanaConGrafica extends JFrame {
-    private GraficaPorcentaje grafica;
+    private GraficaPorcentaje graficaTipo1;
+    private GraficaPorcentaje graficaTipo2;
+
     private JLabel tituloLabel;
-    private JLabel info1Label;
     private JLabel info2Label;
     private JLabel info3Label;
+    private JLabel info4Label;
 
     public VentanaConGrafica() {
-        setSize(400, 350);
+        setSize(800, 500);
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null); 
         setLayout(new BorderLayout());
@@ -84,36 +87,44 @@ public class VentanaConGrafica extends JFrame {
         tituloLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         add(tituloLabel, BorderLayout.NORTH);
 
-        // Panel central con la gráfica
-        grafica = new GraficaPorcentaje();
-        grafica.setBackground(Color.WHITE);
-        add(grafica, BorderLayout.CENTER);
+         // Panel superior con nivel y usuario
+         JPanel panelSuperior = new JPanel(new GridLayout(1, 2, 20, 0));
+         panelSuperior.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+         
+         info3Label = new JLabel("Usuario: ---", SwingConstants.CENTER);
+         
+         info3Label.setFont(new Font("Arial", Font.PLAIN, 14));
+         
+         panelSuperior.add(info3Label);
+         add(panelSuperior, BorderLayout.PAGE_START);
 
-        // Panel derecho con múltiples labels
-        JPanel panelDerecho = new JPanel();
-        panelDerecho.setLayout(new BoxLayout(panelDerecho, BoxLayout.Y_AXIS));
-        panelDerecho.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel panelGraficas = new JPanel();
+        panelGraficas.setLayout(new GridLayout(1, 2, 20, 0));
+        panelGraficas.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        graficaTipo1 = new GraficaPorcentaje();
+        graficaTipo2 = new GraficaPorcentaje();
+        graficaTipo1.setBackground(Color.WHITE);
+        graficaTipo2.setBackground(Color.WHITE);
+        panelGraficas.add(graficaTipo1);
+        panelGraficas.add(graficaTipo2);
+        add(panelGraficas, BorderLayout.CENTER);
 
-        info1Label = new JLabel("Nivel: ---");
-        info2Label = new JLabel("cantidad Examenens: ---");
-        info3Label = new JLabel("Usuario: ---");
+        // Panel derecho con cantidad de exámenes
+        JPanel panelInferior = new JPanel(new GridLayout(1, 2, 20, 0));
+        panelInferior.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
+         info2Label = new JLabel("Examen Practica: ---", SwingConstants.CENTER);
+         info4Label = new JLabel("Examen Final: ---", SwingConstants.CENTER);
+         info2Label.setFont(new Font("Arial", Font.PLAIN, 14));
+         info4Label.setFont(new Font("Arial", Font.PLAIN, 14));
+         panelInferior.add(info2Label);
+         panelInferior.add(info4Label);
+         add(panelInferior, BorderLayout.PAGE_END);
 
-        info1Label.setFont(new Font("Arial", Font.PLAIN, 14));
-        info2Label.setFont(new Font("Arial", Font.PLAIN, 14));
-        info3Label.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        // Añadir labels al panel
-        panelDerecho.add(info1Label);
-        panelDerecho.add(Box.createVerticalStrut(10)); // Espaciado
-        panelDerecho.add(info2Label);
-        panelDerecho.add(Box.createVerticalStrut(10));
-        panelDerecho.add(info3Label);
-
-        add(panelDerecho, BorderLayout.EAST);
 
         cargarDatosDashboard(IDManager.getInstance().getIdUsuario());
         
     }
+    
     private void regresarADesicionForm() {
         Desicion_From desicion = new Desicion_From();
         desicion.setVisible(true);
@@ -121,25 +132,14 @@ public class VentanaConGrafica extends JFrame {
     }
 
     private void cargarDatosDashboard(int idUsuario) {
-        // Suponiendo que tienes una clase que contiene el método datosDashBoard
         Examen_Controller controller = new Examen_Controller();
         Map<String, Object> resultados = controller.datosDashBoard(idUsuario);
 
-        System.err.println("Resultados: " + resultados);
-        if (resultados.containsKey("promedio")) {
-            double promedio = (double) resultados.get("promedio");
-            int porcentaje = (int) Math.round(promedio);
-            
-            // Actualizar la gráfica
-            grafica.setPorcentaje(porcentaje);
-            
-            // Actualizar los labels
-            info1Label.setText("Nivel: " + resultados.get("nivel"));
-            info2Label.setText("Cantidad Exámenes: " + resultados.get("cantidadExamenes"));
-            info3Label.setText("Usuario: " + IDManager.getInstance().getNombre_usuario());
-        } else {
-            grafica.setPorcentaje(0);
-        }
+        graficaTipo1.setPorcentaje((float)resultados.get("promedioTipo1"));
+        graficaTipo2.setPorcentaje((float)resultados.get("promedioTipo2"));
+        info2Label.setText("Cantidad Examen Prueba: " + resultados.get("cantidadExamenesTipo1"));
+        info4Label.setText("Cantidad Examen Final: " + resultados.get("cantidadExamenesTipo2"));
+        info3Label.setText("Usuario: " + IDManager.getInstance().getNombre_usuario());
     }
 
     public static void main(String[] args) {

@@ -39,6 +39,8 @@ public class Examen_Form extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
     public Examen_Form(int tipoExamen) {
+        
+
         this.tipoExamen = tipoExamen;
         Examen_Controller controller = new Examen_Controller();
 
@@ -54,6 +56,8 @@ public class Examen_Form extends javax.swing.JFrame {
 
         this.nombre = IDManager.getInstance().getNombre_usuario();
         initComponents();
+        setLocationRelativeTo(null); 
+        setSize(800, 500);
         this.preguntaActualIndex = 0;
         LabelNombre.setText(this.nombre);
         mostrarPreguntaActual();
@@ -74,7 +78,6 @@ public class Examen_Form extends javax.swing.JFrame {
                 if (segundos == 60) {
                     System.out.println("se logró");
                     SiguentePregunta();
-                    timer.stop(); // detener si solo quieres 1 minuto
                 }
             }
         });

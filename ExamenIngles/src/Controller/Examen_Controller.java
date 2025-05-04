@@ -187,7 +187,7 @@ public class Examen_Controller {
         if (tipoExamen == 1) {
             calificacion = (float) respuestasCorrectas * 5;
         } else if (tipoExamen == 2) {
-            calificacion = (float) respuestasCorrectas * (5 / 2);
+            calificacion = (float) respuestasCorrectas * (5f / 2);
         }
 
         String nivel = determinarNivel(calificacion);
@@ -200,28 +200,39 @@ public class Examen_Controller {
         Map<String, Object> resultados = new HashMap<>();
         Conexion conexion = new Conexion();
         try{
-            conexion.prepareCall("spExamenInblesGetExamenByUsuario", 1);
+            conexion.prepareCall("spExamenInblesGetExamenByUsuario", 5);
             conexion.addInParameter("_id_usuario", _id_usuario);
-            ResultSet rs = conexion.executeResultSet();
+            conexion.addOutParameter("_calificacion_tipo1", java.sql.Types.FLOAT);
+            conexion.addOutParameter("_calificacion_tipo2", java.sql.Types.FLOAT);
+            conexion.addOutParameter("_cantidad_examenes_tipo1", java.sql.Types.INTEGER);
+            conexion.addOutParameter("_cantidad_examenes_tipo2", java.sql.Types.INTEGER);
+            conexion.execute();
 
-            double sumaCalificaciones = 0;
-            int cantidadExamenes = 0;
 
-            while (rs != null && rs.next()) {
-                double calificacion = rs.getDouble("calificacion");
-                sumaCalificaciones += calificacion;
-                cantidadExamenes++;
-            }
+
+
+            /// falta que funcionen estos lo de arriba ya esta fubcionando
+            Float calificacionTipo1 = conexion.getOutParameter("_calificacion_tipo1", Float.class);
+            Float calificacionTipo2 = conexion.getOutParameter("_calificacion_tipo2", Float.class);
+            Integer cantidadExamenesTipo1 = conexion.getOutParameter("_cantidad_examenes_tipo1", Integer.class);
+            Integer cantidadExamenesTipo2 = conexion.getOutParameter("_cantidad_examenes_tipo2", Integer.class);
             
+
+
+            Float promedioExamenTipo1 = (cantidadExamenesTipo1 != null && cantidadExamenesTipo1 > 0)
+            ? calificacionTipo1 / cantidadExamenesTipo1
+            : 0f;
+    
+            Float promedioExamenTipo2 = (cantidadExamenesTipo2 != null && cantidadExamenesTipo2 > 0)
+            ? calificacionTipo2 / cantidadExamenesTipo2
+            : 0f;
+    
             
-            if (cantidadExamenes > 0) {
-                double promedio = sumaCalificaciones / cantidadExamenes;
-                String nivel = determinarNivel(promedio);
-                
-                resultados.put("promedio", promedio);
-                resultados.put("nivel", nivel);
-                resultados.put("cantidadExamenes", cantidadExamenes);
-            }
+            resultados.put("promedioTipo1", promedioExamenTipo1);
+            resultados.put("promedioTipo2", promedioExamenTipo2);
+            resultados.put("cantidadExamenesTipo1", cantidadExamenesTipo1);
+            resultados.put("cantidadExamenesTipo2", cantidadExamenesTipo2);
+            
             
             return resultados;
             
@@ -244,8 +255,8 @@ public class Examen_Controller {
         }
     }
 
-    public Map<String, Boolean>  presentarExamen(int _id_usuario){
-        Map<String, Boolean> resultado = new HashMap<>();
+    public Map<String, Object>  presentarExamen(int _id_usuario){
+        Map<String, Object> resultado = new HashMap<>();
         Conexion conexion = new Conexion();
         try {
             conexion.prepareCall("spExamenInglescantidadExamenesPorUsuario", 3);
@@ -257,8 +268,8 @@ public class Examen_Controller {
             int cantidadPrueba = conexion.getOutParameter("_prueba", Integer.class);
             int cantidadFinal = conexion.getOutParameter("_final", Integer.class);
 
-            resultado.put("puedePresentarPrueba", cantidadPrueba < 5);
-            resultado.put("puedePresentarFinal", cantidadFinal < 2);
+            resultado.put("puedePresentarPrueba", cantidadPrueba );
+            resultado.put("puedePresentarFinal", cantidadFinal );
 
             return resultado;
         } catch (Exception e) {
@@ -267,5 +278,24 @@ public class Examen_Controller {
         } finally {
             conexion.closeConnection();
         }
+    }
+
+    public int ObtenerRespuestaCorrecta (int idPregunta){
+        int respuesta = 0;
+        Conexion conexion = new Conexion();
+        try {
+            conexion.prepareCall("spExamenInglesGetRespuestaCorrecta", 1);
+            conexion.addInParameter("_idPregunta", idPregunta);
+            ResultSet rsRespuesta = conexion.executeResultSet();
+
+            if (rsRespuesta != null && rsRespuesta.next()) {
+                respuesta = rsRespuesta.getInt("id_respuesta_pregunta");
+            }
+        } catch (Exception e) {
+            System.err.println("Error al obtener la respuesta: " + e.getMessage());
+        } finally {
+            conexion.closeConnection();
+        }
+        return respuesta;
     }
 }

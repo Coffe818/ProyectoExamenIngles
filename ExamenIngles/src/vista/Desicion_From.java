@@ -22,7 +22,15 @@ public class Desicion_From extends javax.swing.JFrame {
      * Creates new form Decicion_From
      */
     public Desicion_From() {
+        Examen_Controller controller = new Examen_Controller();
         initComponents();
+
+        Map<String, Object> permisos = controller.presentarExamen(IDManager.getInstance().getIdUsuario());
+        LabelPruebasRestantes.setText("Pruebas restantes: " + (5-(Integer)permisos.get("puedePresentarPrueba")));
+        LabelFinalesRestantes.setText("Finales restantes: "+ (2-(Integer)permisos.get("puedePresentarFinal")));
+
+        
+        setLocationRelativeTo(null); 
         LabelNombre.setText(IDManager.getInstance().getNombre_usuario());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
@@ -54,6 +62,8 @@ public class Desicion_From extends javax.swing.JFrame {
         RadioButtonOpcion3 = new javax.swing.JRadioButton();
         ButtonSeleccionar = new javax.swing.JButton();
         LabelNombre = new javax.swing.JLabel();
+        LabelPruebasRestantes = new javax.swing.JLabel();
+        LabelFinalesRestantes = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -74,6 +84,12 @@ public class Desicion_From extends javax.swing.JFrame {
         });
 
         LabelNombre.setText("jLabel1");
+        
+
+        LabelPruebasRestantes.setText("Pruebas restantes: --");
+
+        LabelFinalesRestantes.setText("Finales restantes: --");
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -87,7 +103,10 @@ public class Desicion_From extends javax.swing.JFrame {
                         .addComponent(RadioButtonOpcion1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                         .addComponent(RadioButtonOpcion2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(RadioButtonOpcion3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LabelNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(LabelNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(LabelPruebasRestantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(LabelFinalesRestantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        ))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -96,6 +115,10 @@ public class Desicion_From extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(LabelNombre)
                 .addGap(38, 38, 38)
+                .addComponent(LabelPruebasRestantes)
+                .addGap(5, 5, 5)
+                .addComponent(LabelFinalesRestantes)
+                .addGap(20, 20, 20)
                 .addComponent(RadioButtonOpcion1)
                 .addGap(18, 18, 18)
                 .addComponent(RadioButtonOpcion2)
@@ -126,9 +149,9 @@ public class Desicion_From extends javax.swing.JFrame {
     }
     
     if(tipo == 1 || tipo == 2) {
-        Map<String, Boolean> permisos = controller.presentarExamen(IDManager.getInstance().getIdUsuario()); 
+        Map<String, Object> permisos = controller.presentarExamen(IDManager.getInstance().getIdUsuario()); 
         
-        if(tipo == 1 && !permisos.get("puedePresentarPrueba")) {
+        if(tipo == 1 && !((Integer) permisos.get("puedePresentarPrueba") < 5)) {
             JOptionPane.showMessageDialog(this, 
                 "Ya has alcanzado el limite de 5 examenes de prueba", 
                 "limite alcanzado", 
@@ -136,7 +159,7 @@ public class Desicion_From extends javax.swing.JFrame {
             return;
         }
         
-        if(tipo == 2 && !permisos.get("puedePresentarFinal")) {
+        if(tipo == 2 && !((Integer) permisos.get("puedePresentarFinal")< 2)) {
             JOptionPane.showMessageDialog(this, 
                 "Ya has alcanzado el limite de 2 examenes finales", 
                 "limite alcanzado", 
@@ -198,5 +221,7 @@ public class Desicion_From extends javax.swing.JFrame {
     private javax.swing.JRadioButton RadioButtonOpcion2;
     private javax.swing.JRadioButton RadioButtonOpcion3;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel LabelPruebasRestantes;
+    private javax.swing.JLabel LabelFinalesRestantes;
     // End of variables declaration//GEN-END:variables
 }

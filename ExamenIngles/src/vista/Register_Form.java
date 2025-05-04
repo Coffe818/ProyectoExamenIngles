@@ -13,6 +13,8 @@ public class Register_Form extends javax.swing.JFrame {
 
     public Register_Form() {
         initComponents();
+        setLocationRelativeTo(null); 
+
     }
 
 

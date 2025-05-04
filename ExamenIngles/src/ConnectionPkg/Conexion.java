@@ -108,6 +108,8 @@ public class Conexion {
                 return type.cast(comando.getDate(parameterName));
             } else if (type == Boolean.class) {
                 return type.cast(comando.getBoolean(parameterName));
+            } else if (type == Float.class) {
+                return type.cast(comando.getFloat(parameterName));
             } else {
                 System.err.println("Tipo de dato no soportado: " + type.getName());
                 throw new IllegalArgumentException("Tipo de dato no soportado: " + type.getName());
