@@ -5,6 +5,7 @@ public class IDManager {
     private int id_usuario;
     private int id_examen;
     private String nombre_usuario;
+    private String nivel_usuario;
     
     private IDManager() {}
 
@@ -37,6 +38,14 @@ public class IDManager {
 
     public void setId_examen(int id_examen) {
         this.id_examen = id_examen;   
+    }
+
+    public String getNivel_usuario() {
+        return nivel_usuario;
+    }
+
+    public void setNivel_usuario(String nivel_usuario) {
+        this.nivel_usuario = nivel_usuario;
     }
 
     

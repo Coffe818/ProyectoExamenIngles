@@ -192,7 +192,7 @@ public class Examen_Controller {
 
         String nivel = determinarNivel(calificacion);
         
-
+        IDManager.getInstance().setNivel_usuario(nivel);
         return new ResultadoExamen(calificacion, nivel);
     }
 
