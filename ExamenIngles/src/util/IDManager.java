@@ -1,13 +1,15 @@
 package util;
 
+import Controller.Examen_Controller;
+
 public class IDManager {
     private static IDManager instance;
     private int id_usuario;
     private int id_examen;
     private String nombre_usuario;
-    private String nivel_usuario;
-    
-    private IDManager() {}
+
+    private IDManager() {
+    }
 
     public String getNombre_usuario() {
         return nombre_usuario;
@@ -37,18 +39,17 @@ public class IDManager {
     }
 
     public void setId_examen(int id_examen) {
-        this.id_examen = id_examen;   
+        this.id_examen = id_examen;
     }
 
     public String getNivel_usuario() {
-        return nivel_usuario;
+
+        Examen_Controller controller = new Examen_Controller();
+        return controller.getNivelIngles(getIdUsuario());
+
     }
 
-    public void setNivel_usuario(String nivel_usuario) {
-        this.nivel_usuario = nivel_usuario;
-    }
 
-    
 }
 
 // // Uso:

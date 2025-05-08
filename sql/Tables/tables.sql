@@ -58,3 +58,5 @@ CREATE TABLE IF NOT EXISTS examen_ingles_respuesta_usuario (
 select u.nombre, u.email, u.contrasena, u.nivel_ingles, e.calificacion from examen_ingles_usuario u 
 JOIN examen_ingles_examen e ON u.id_usuario = e.id_usuario
 where e.calificacion >= 50;
+
+select * from examen_ingles_usuario

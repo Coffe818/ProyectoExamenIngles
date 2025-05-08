@@ -192,7 +192,6 @@ public class Examen_Controller {
 
         String nivel = determinarNivel(calificacion);
         
-        IDManager.getInstance().setNivel_usuario(nivel);
         return new ResultadoExamen(calificacion, nivel);
     }
 
@@ -297,5 +296,25 @@ public class Examen_Controller {
             conexion.closeConnection();
         }
         return respuesta;
+    }
+
+    public String getNivelIngles(int idUsuario) {
+        String nivel = null;
+        Conexion conexion = new Conexion();
+        try {
+            conexion.prepareCall("spNivelInglesUsuario", 2);
+            conexion.addInParameter("id_usuario", idUsuario);
+            conexion.addOutParameter("_nivel_ingles", java.sql.Types.VARCHAR);
+            conexion.execute();
+
+            nivel = conexion.getOutParameter("_nivel_ingles", String.class);
+
+            
+        } catch (Exception e) {
+            System.err.println("Error al obtener el nivel de inglés: " + e.getMessage());
+        } finally {
+            conexion.closeConnection();
+        }
+        return nivel;
     }
 }

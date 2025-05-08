@@ -98,7 +98,6 @@ public class InsercionMasiva {
                             continue;
                         }
                     } else {
-                        // Seleccionamos una respuesta aleatoria
                         int respuestaRamdon = (int) (Math.random() * 4);
                         RespuestaModel respuestaRamdonModel = respuestas.get(respuestaRamdon);
                         respuestaSeleccionadaId = respuestaRamdonModel.id;
