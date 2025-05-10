@@ -2133,18 +2133,22 @@ select p.id_pregunta, pr.id_respuesta_pregunta, p.texto_pregunta, pr.texto_respu
 SELECT * FROM examen_ingles_pregunta;
 
 --sript para asegurar que todo se califica bien
--- select U.nombre, E.id_examen, E.tipo_examen, P.texto_pregunta, PR.id_respuesta_pregunta,PR.texto_respuesta ,PR.es_correcta, RU.id_respuesta_pregunta from examen_ingles_usuario U 
--- join examen_ingles_examen E on U.id_usuario = E.id_usuario
--- join examen_ingles_respuesta_usuario RU on RU.id_examen = E.id_examen
--- join examen_ingles_pregunta P on P.id_pregunta = RU.id_pregunta
--- join examen_ingles_respuesta_pregunta PR on P.id_pregunta = PR.id_pregunta 
--- where U.id_usuario = 20 
--- -- and  e.id_examen=89 
--- -- and PR.es_correcta=1 
--- -- and PR.id_respuesta_pregunta = RU.id_respuesta_pregunta
--- ORDER BY U.nombre, E.id_examen, P.id_pregunta
+select U.nombre, E.id_examen, E.tipo_examen, P.texto_pregunta, PR.id_respuesta_pregunta,PR.texto_respuesta ,PR.es_correcta, RU.id_respuesta_pregunta from examen_ingles_usuario U 
+join examen_ingles_examen E on U.id_usuario = E.id_usuario
+join examen_ingles_respuesta_usuario RU on RU.id_examen = E.id_examen
+join examen_ingles_pregunta P on P.id_pregunta = RU.id_pregunta
+join examen_ingles_respuesta_pregunta PR on P.id_pregunta = PR.id_pregunta 
+where U.id_usuario = 20 
+ORDER BY U.nombre, E.id_examen, P.id_pregunta
 
 
 --select * from examen_ingles_examen where id_examen = 89;
 
 select * from examen_ingles_usuario
+
+
+
+
+
+
+

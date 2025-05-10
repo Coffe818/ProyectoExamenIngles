@@ -2,8 +2,8 @@ package util;
 
 public class RespuestaModel {
     
-    public String texto;
-    public int id;
+    private String texto;
+    private int id;
 
     public RespuestaModel(String texto, int id) {
         this.texto = texto;
@@ -14,4 +14,17 @@ public class RespuestaModel {
     public String toString() {
         return "- " + texto;
     }
+    public String getTexto() {
+        return texto;
+    }
+    public void setTexto(String texto) {
+        this.texto = texto;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    
 }

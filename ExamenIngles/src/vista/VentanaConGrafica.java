@@ -1,10 +1,8 @@
 package Vista;
 
 import javax.swing.*;
-
 import Controller.Examen_Controller;
 import util.IDManager;
-
 import java.awt.*;
 import java.util.Map;
 
@@ -50,10 +48,9 @@ class GraficaPorcentaje extends JPanel {
         int textHeight = fm.getAscent();
         g2.drawString(texto, getWidth() / 2 - textWidth / 2, getHeight() / 2 + textHeight / 4);
     }
-
 }
 
-public class VentanaConGrafica extends JFrame {
+public class VentanaConGrafica extends JPanel {
     private GraficaPorcentaje graficaTipo1;
     private GraficaPorcentaje graficaTipo2;
 
@@ -62,20 +59,14 @@ public class VentanaConGrafica extends JFrame {
     private JLabel info3Label;
     private JLabel info4Label;
     private JLabel info5Label;
+    private JButton regresarButton;
 
-    public VentanaConGrafica() {
-        setSize(800, 500);
+    MainApp mainApp;
 
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setLocationRelativeTo(null);
+    public VentanaConGrafica(MainApp mainApp) {
+        this.mainApp = mainApp;
+        setPreferredSize(new Dimension(800, 550));
         setLayout(new BorderLayout());
-
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                regresarADesicionForm();
-            }
-        });
 
         // Label superior
         tituloLabel = new JLabel("Promedio de aciertos", SwingConstants.CENTER);
@@ -97,6 +88,7 @@ public class VentanaConGrafica extends JFrame {
         panelSuperior.add(info5Label);
         add(panelSuperior, BorderLayout.PAGE_START);
 
+        // Panel de gráficas
         JPanel panelGraficas = new JPanel();
         panelGraficas.setLayout(new GridLayout(1, 2, 20, 0));
         panelGraficas.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -108,25 +100,27 @@ public class VentanaConGrafica extends JFrame {
         panelGraficas.add(graficaTipo2);
         add(panelGraficas, BorderLayout.CENTER);
 
-        // Panel derecho con cantidad de exámenes
-        JPanel panelInferior = new JPanel(new GridLayout(1, 2, 20, 0));
+        // Panel inferior con cantidad de exámenes
+        JPanel panelInferior = new JPanel(new GridLayout(2, 2, 20, 0));
         panelInferior.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         info2Label = new JLabel("Examen Practica: ---", SwingConstants.CENTER);
         info4Label = new JLabel("Examen Final: ---", SwingConstants.CENTER);
+        regresarButton = new JButton("Regresar");
+        regresarButton.setFont(new Font("Arial", Font.PLAIN, 14));
         info2Label.setFont(new Font("Arial", Font.PLAIN, 14));
         info4Label.setFont(new Font("Arial", Font.PLAIN, 14));
+        regresarButton.addActionListener(e -> regresarADesicionForm());
         panelInferior.add(info2Label);
         panelInferior.add(info4Label);
+        panelInferior.add(regresarButton);
         add(panelInferior, BorderLayout.PAGE_END);
 
         cargarDatosDashboard(IDManager.getInstance().getIdUsuario());
-
     }
 
-    private void regresarADesicionForm() {
-        Desicion_From desicion = new Desicion_From();
-        desicion.setVisible(true);
-        this.dispose();
+    public void regresarADesicionForm() {
+        mainApp.addPanel(new Desicion_From(mainApp), "Desicion");
+        mainApp.showPanel("Desicion");
     }
 
     private void cargarDatosDashboard(int idUsuario) {
@@ -140,10 +134,4 @@ public class VentanaConGrafica extends JFrame {
         info3Label.setText("Usuario: " + IDManager.getInstance().getNombre_usuario());
         info5Label.setText("Nivel: " + IDManager.getInstance().getNivel_usuario());
     }
-
-    public static void main(String[] args) {
-        VentanaConGrafica ventana = new VentanaConGrafica();
-        ventana.setVisible(true);
-    }
-
 }

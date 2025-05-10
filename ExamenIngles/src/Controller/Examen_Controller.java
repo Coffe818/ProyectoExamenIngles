@@ -21,6 +21,8 @@ import ConnectionPkg.Conexion;
 import util.IDManager;
 import util.PreguntaModel;
 import util.RespuestaModel;
+import util.UltimaPreguntasModel;
+import util.UltimaRespuesta;
 
 class Configuracion {
     int cantidad;
@@ -35,7 +37,7 @@ class Configuracion {
 }
 
 public class Examen_Controller {
-    List<Configuracion> ExamenPrueba = Arrays.asList( //1
+    List<Configuracion> ExamenPrueba = Arrays.asList( // 1
             new Configuracion(2, 1, 10),
             new Configuracion(3, 11, 25),
             new Configuracion(3, 26, 40),
@@ -43,7 +45,7 @@ public class Examen_Controller {
             new Configuracion(4, 61, 70),
             new Configuracion(4, 71, 75));
 
-    List<Configuracion> Examenfinal = Arrays.asList(//2
+    List<Configuracion> Examenfinal = Arrays.asList(// 2
             new Configuracion(4, 1, 10),
             new Configuracion(6, 11, 25),
             new Configuracion(6, 26, 40),
@@ -178,8 +180,8 @@ public class Examen_Controller {
         int totalPreguntas = listapreguntas.size();
 
         for (PreguntaModel pregunta : listapreguntas) {
-            Integer respuestaUsuario = respuestasUsuario.get(pregunta.id);
-            if (respuestaUsuario != null && respuestaUsuario.equals(pregunta.idRespuestaCorrecta)) {
+            Integer respuestaUsuario = respuestasUsuario.get(pregunta.getId());
+            if (respuestaUsuario != null && respuestaUsuario.equals(pregunta.getIdRespuestaCorrecta())) {
                 respuestasCorrectas++;
             }
         }
@@ -191,14 +193,14 @@ public class Examen_Controller {
         }
 
         String nivel = determinarNivel(calificacion);
-        
+
         return new ResultadoExamen(calificacion, nivel);
     }
 
-    public Map<String, Object> datosDashBoard(int _id_usuario){
+    public Map<String, Object> datosDashBoard(int _id_usuario) {
         Map<String, Object> resultados = new HashMap<>();
         Conexion conexion = new Conexion();
-        try{
+        try {
             conexion.prepareCall("spExamenInblesGetExamenByUsuario", 5);
             conexion.addInParameter("_id_usuario", _id_usuario);
             conexion.addOutParameter("_calificacion_tipo1", java.sql.Types.FLOAT);
@@ -207,38 +209,31 @@ public class Examen_Controller {
             conexion.addOutParameter("_cantidad_examenes_tipo2", java.sql.Types.INTEGER);
             conexion.execute();
 
-
-
-
             /// falta que funcionen estos lo de arriba ya esta fubcionando
             Float calificacionTipo1 = conexion.getOutParameter("_calificacion_tipo1", Float.class);
             Float calificacionTipo2 = conexion.getOutParameter("_calificacion_tipo2", Float.class);
             Integer cantidadExamenesTipo1 = conexion.getOutParameter("_cantidad_examenes_tipo1", Integer.class);
             Integer cantidadExamenesTipo2 = conexion.getOutParameter("_cantidad_examenes_tipo2", Integer.class);
-            
-
 
             Float promedioExamenTipo1 = (cantidadExamenesTipo1 != null && cantidadExamenesTipo1 > 0)
-            ? calificacionTipo1 / cantidadExamenesTipo1
-            : 0f;
-    
+                    ? calificacionTipo1 / cantidadExamenesTipo1
+                    : 0f;
+
             Float promedioExamenTipo2 = (cantidadExamenesTipo2 != null && cantidadExamenesTipo2 > 0)
-            ? calificacionTipo2 / cantidadExamenesTipo2
-            : 0f;
-    
-            
+                    ? calificacionTipo2 / cantidadExamenesTipo2
+                    : 0f;
+
             resultados.put("promedioTipo1", promedioExamenTipo1);
             resultados.put("promedioTipo2", promedioExamenTipo2);
             resultados.put("cantidadExamenesTipo1", cantidadExamenesTipo1);
             resultados.put("cantidadExamenesTipo2", cantidadExamenesTipo2);
-            
-            
+
             return resultados;
-            
-        }catch (Exception e){
+
+        } catch (Exception e) {
             System.err.println("Error al obtener datos del dashboard: " + e.getMessage());
             return null;
-        }finally {
+        } finally {
             conexion.closeConnection();
         }
 
@@ -254,21 +249,24 @@ public class Examen_Controller {
         }
     }
 
-    public Map<String, Object>  presentarExamen(int _id_usuario){
+    public Map<String, Object> presentarExamen(int _id_usuario) {
         Map<String, Object> resultado = new HashMap<>();
         Conexion conexion = new Conexion();
         try {
-            conexion.prepareCall("spExamenInglescantidadExamenesPorUsuario", 3);
+            conexion.prepareCall("spExamenInglescantidadExamenesPorUsuario", 4);
             conexion.addInParameter("_id_usuario", _id_usuario);
             conexion.addOutParameter("_prueba", java.sql.Types.INTEGER);
             conexion.addOutParameter("_final", java.sql.Types.INTEGER);
+            conexion.addOutParameter("_ya_aprobo", java.sql.Types.BOOLEAN);
             conexion.execute();
 
             int cantidadPrueba = conexion.getOutParameter("_prueba", Integer.class);
             int cantidadFinal = conexion.getOutParameter("_final", Integer.class);
+            boolean yaAprobo = conexion.getOutParameter("_ya_aprobo", Boolean.class);
 
-            resultado.put("puedePresentarPrueba", cantidadPrueba );
-            resultado.put("puedePresentarFinal", cantidadFinal );
+            resultado.put("puedePresentarPrueba", cantidadPrueba);
+            resultado.put("puedePresentarFinal", cantidadFinal);
+            resultado.put("yaAprobo", yaAprobo);
 
             return resultado;
         } catch (Exception e) {
@@ -279,7 +277,7 @@ public class Examen_Controller {
         }
     }
 
-    public int ObtenerRespuestaCorrecta (int idPregunta){
+    public int ObtenerRespuestaCorrecta(int idPregunta) {
         int respuesta = 0;
         Conexion conexion = new Conexion();
         try {
@@ -309,12 +307,70 @@ public class Examen_Controller {
 
             nivel = conexion.getOutParameter("_nivel_ingles", String.class);
 
-            
         } catch (Exception e) {
             System.err.println("Error al obtener el nivel de inglés: " + e.getMessage());
         } finally {
             conexion.closeConnection();
         }
         return nivel;
+    }
+
+    public List<UltimaPreguntasModel> getUltimoExamen(int idUsuario, int tipoExamen) {
+        List<UltimaPreguntasModel> preguntas = new ArrayList<>();
+        Conexion conexion = new Conexion();
+        try {
+            if (tipoExamen != 1 && tipoExamen != 2) {
+                throw new IllegalArgumentException("Tipo de examen inválido");
+            }
+
+            conexion.prepareCall("spUltimoExamenIngles", 2);
+            conexion.addInParameter("_id_usuario", idUsuario);
+            conexion.addInParameter("_tipo_examen", tipoExamen);
+            ;
+
+            List<List<Map<String, Object>>> resultSets = conexion.executeMultipleResultSets();
+
+            if (!resultSets.isEmpty()) {
+                Map<Integer, UltimaPreguntasModel> preguntasMap = new HashMap<>();
+
+                // Primer ResultSet (Preguntas)
+                List<Map<String, Object>> rsPreguntas = resultSets.get(0);
+                for (Map<String, Object> row : rsPreguntas) {
+                    int idPregunta = (int) row.get("id_pregunta");
+                    String textoPregunta = (String) row.get("texto_pregunta");
+
+                    UltimaPreguntasModel pregunta = new UltimaPreguntasModel(idPregunta, textoPregunta,
+                            new ArrayList<>());
+                    preguntasMap.put(idPregunta, pregunta);
+                }
+
+                // Segundo ResultSet (Respuestas)
+                if (resultSets.size() > 1) {
+                    List<Map<String, Object>> rsRespuestas = resultSets.get(1);
+                    for (Map<String, Object> row : rsRespuestas) {
+                        int idPregunta = (int) row.get("id_pregunta");
+                        String textoRespuesta = (String) row.get("texto_respuesta");
+                        boolean correcta = ((Number) row.get("correcta")).intValue() == 1;
+                        boolean seleccionUsuario = ((Number) row.get("seleccion_usuario")).intValue() == 1;
+
+
+                        UltimaRespuesta respuesta = new UltimaRespuesta(idPregunta, textoRespuesta, correcta,
+                                seleccionUsuario);
+
+                        if (preguntasMap.containsKey(idPregunta)) {
+                            preguntasMap.get(idPregunta).getRespuestas().add(respuesta);
+                        }
+                    }
+                }
+
+                preguntas.addAll(preguntasMap.values());
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener el examen: " + e.getMessage());
+        } finally {
+            conexion.closeConnection();
+        }
+        return preguntas;
     }
 }

@@ -1,22 +1,18 @@
-
 package Vista;
 
 import java.awt.Color;
-
 import javax.swing.ImageIcon;
-
 import Controller.Register_Controller;
 import assets.Enum.ImagenRuta;
 
-public class Register_Form extends javax.swing.JFrame {
+public class Register_Form extends javax.swing.JPanel {
 
-
-    public Register_Form() {
+    MainApp mainApp;
+    public Register_Form(MainApp mainApp) {
         initComponents();
-        setLocationRelativeTo(null); 
-
+        setPreferredSize(new java.awt.Dimension(800, 550));
+        this.mainApp = mainApp;
     }
-
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -36,8 +32,6 @@ public class Register_Form extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
         bg.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -139,18 +133,8 @@ public class Register_Form extends javax.swing.JFrame {
         });
         bg.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 452, -1, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bg, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        pack();
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
+        add(bg);
     }
 
     private void emailTxtMousePressed(java.awt.event.MouseEvent evt) {
@@ -166,7 +150,6 @@ public class Register_Form extends javax.swing.JFrame {
             nombreTxt.setText("Ingrese su nombre de usuario");
             nombreTxt.setForeground(Color.gray);
         }
-        
     }
 
     private void passwordTxtMousePressed(java.awt.event.MouseEvent evt) {
@@ -200,13 +183,18 @@ public class Register_Form extends javax.swing.JFrame {
     }
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {
-        // javax.swing.JOptionPane.showMessageDialog(this, "Logica de insercion de usuario con variables:\nNombre: " + nombreTxt.getText() + "\nCorreo: " + emailTxt.getText() + "\nPassword: " + new String(passwordTxt.getPassword()));
-
         Register_Controller controller = new Register_Controller();
+        if (emailTxt.getText().isEmpty() || String.valueOf(passwordTxt.getPassword()).isEmpty() || nombreTxt.getText().isEmpty() || emailTxt.getText().equals("Ingrese su correo electrónico") || new String(passwordTxt.getPassword()).equals("********") || nombreTxt.getText().equals("Ingrese su nombre de usuario")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+            return;
+        }
         controller.insertUser(emailTxt.getText(), new String(passwordTxt.getPassword()), nombreTxt.getText());
 
-        new Login_Form().setVisible(true);
-        this.dispose();
+        
+        javax.swing.JFrame topFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (topFrame != null) {
+            mainApp.showPanel("Login");
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

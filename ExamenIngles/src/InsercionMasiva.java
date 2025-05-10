@@ -20,7 +20,7 @@ public class InsercionMasiva {
         con.resetAll();
         
         int i = 0;
-        while (i<20) {
+        while (i<10) {
             
             String email = "correo" + i + "@gmail.com";
             String password = "password " + i;
@@ -76,20 +76,20 @@ public class InsercionMasiva {
                 System.out.println(maparespuestas);
 
                 for(PreguntaModel pregunta : listapreguntas) {
-                    System.out.println("\nPregunta: " + pregunta.texto);
-                    List<RespuestaModel> respuestas = maparespuestas.get(pregunta.id);
+                    System.out.println("\nPregunta: " + pregunta.getTexto());
+                    List<RespuestaModel> respuestas = maparespuestas.get(pregunta.getId());
                     System.out.println("Respuestas:");
                     for (RespuestaModel respuesta : respuestas) {
-                        System.out.println(respuesta.texto + " (ID: " + respuesta.id + ")");
+                        System.out.println(respuesta.getTexto() + " (ID: " + respuesta.getId() + ")");
                     }
 
 
                     double probabilidad = Math.random();
 
                     int respuestaSeleccionadaId;
-                    if (probabilidad < 1) {
+                    if (probabilidad < .80) {
 
-                        int respuestaCorrecta = examen.ObtenerRespuestaCorrecta(pregunta.id);
+                        int respuestaCorrecta = examen.ObtenerRespuestaCorrecta(pregunta.getId());
                         if (respuestaCorrecta != -1) {
                             respuestaSeleccionadaId = respuestaCorrecta;
                             System.out.println("Respuesta correcta seleccionada: " + respuestaCorrecta);
@@ -100,11 +100,11 @@ public class InsercionMasiva {
                     } else {
                         int respuestaRamdon = (int) (Math.random() * 4);
                         RespuestaModel respuestaRamdonModel = respuestas.get(respuestaRamdon);
-                        respuestaSeleccionadaId = respuestaRamdonModel.id;
-                        System.out.println("Respuesta aleatoria seleccionada: " + respuestaRamdonModel.texto);
+                        respuestaSeleccionadaId = respuestaRamdonModel.getId();
+                        System.out.println("Respuesta aleatoria seleccionada: " + respuestaRamdonModel.getTexto());
                     }
 
-                    respuestasUsuario.put(pregunta.id, respuestaSeleccionadaId);
+                    respuestasUsuario.put(pregunta.getId(), respuestaSeleccionadaId);
         
                 }
                 examen.guardarExamen(tipoExamen, respuestasUsuario, listapreguntas);

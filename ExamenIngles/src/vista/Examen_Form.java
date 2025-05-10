@@ -1,31 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-
-/**
- *
- * @author josem
- */
 package Vista;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.Timer;
 
 import Controller.Examen_Controller;
 import util.IDManager;
 import util.PreguntaModel;
 import util.RespuestaModel;
+import util.UltimaPreguntasModel;
 
+import java.awt.*;
+import javax.swing.*;
 
+public class Examen_Form extends JPanel {
 
-public class Examen_Form extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Examen_Form
-     */
     private List<PreguntaModel> listapreguntas = null;
     private Map<Integer, List<RespuestaModel>> maparespuestas = null;
     private String nombre = null;
@@ -35,110 +26,104 @@ public class Examen_Form extends javax.swing.JFrame {
     private int segundos = 0;
     private int tipoExamen = 0;
     
-    
+    // Componentes de la interfaz
+    private JLabel LabelNombre;
+    private JLabel LabelPregunta;
+    private JRadioButton RadioButtonRespuesta1;
+    private JRadioButton RadioButtonRespuesta2;
+    private JRadioButton RadioButtonRespuesta3;
+    private JRadioButton RadioButtonRespuesta4;
+    private JLabel LabelTiempo;
+    private JButton ButtonSiguiente;
+    private ButtonGroup buttonGroup1;
 
-    @SuppressWarnings("unchecked")
-    public Examen_Form(int tipoExamen) {
-        
-
+    MainApp mainApp;
+    public Examen_Form(MainApp mainApp, int tipoExamen) {
         this.tipoExamen = tipoExamen;
+        this.mainApp = mainApp;
         Examen_Controller controller = new Examen_Controller();
 
         Map<String, Object> datosExamen = controller.obtenerPreguntasYRespuestas(tipoExamen);
 
         this.listapreguntas = (List<PreguntaModel>) datosExamen.get("preguntas");
-
         this.maparespuestas = (Map<Integer, List<RespuestaModel>>) datosExamen.get("respuestas");
+
+        Collections.sort(listapreguntas, Comparator.comparingInt(PreguntaModel::getId));
+
         System.out.println("Preguntas obtenidas: " + listapreguntas.size());
 
-
-
-
         this.nombre = IDManager.getInstance().getNombre_usuario();
-        initComponents();
-        setLocationRelativeTo(null); 
-        setSize(800, 500);
         this.preguntaActualIndex = 0;
-        LabelNombre.setText(this.nombre);
+        
+        initComponents();
         mostrarPreguntaActual();
         iniciarTemporizador();
     }
 
     private void iniciarTemporizador() {
-        timer = new Timer(1000, new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                segundos++;
+        timer = new Timer(1000, e -> {
+            segundos++;
     
-                int minutos = segundos / 60;
-                int segs = segundos % 60;
+            int minutos = segundos / 60;
+            int segs = segundos % 60;
     
-                LabelTiempo.setText(String.format("%02d:%02d", minutos, segs));
+            LabelTiempo.setText(String.format("%02d:%02d", minutos, segs));
     
-                if (segundos == 60) {
-                    System.out.println("se logró");
-                    SiguentePregunta();
-                }
+            if (segundos == 60) {
+                System.out.println("se logró");
+                SiguentePregunta();
             }
         });
     
         timer.start();
     }
-    
-
-
 
     private void mostrarPreguntaActual() {
         PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
-        List<RespuestaModel> respuestas = maparespuestas.get(pregunta.id);
-        String textoConBr = pregunta.texto.replace("\n", "<br>");
+        List<RespuestaModel> respuestas = maparespuestas.get(pregunta.getId());
+        String textoConBr = pregunta.getTexto().replace("\n", "<br>");
         String textopregunta = Integer.toString(this.preguntaActualIndex + 1) + ".- " + textoConBr;
         String textoHtml = "<html>" + textopregunta + "</html>";
         LabelPregunta.setText(textoHtml);
-        RadioButtonRespuesta1.setText(respuestas.get(0).texto);
-        RadioButtonRespuesta2.setText(respuestas.get(1).texto);
-        RadioButtonRespuesta3.setText(respuestas.get(2).texto);
-        RadioButtonRespuesta4.setText(respuestas.get(3).texto);
-
+        RadioButtonRespuesta1.setText(respuestas.get(0).getTexto());
+        RadioButtonRespuesta2.setText(respuestas.get(1).getTexto());
+        RadioButtonRespuesta3.setText(respuestas.get(2).getTexto());
+        RadioButtonRespuesta4.setText(respuestas.get(3).getTexto());
     }
 
     private void finalizarExamen() {
         LabelPregunta.setText("Examen finalizado");
         System.out.println(this.respuestasUsuario);
         Examen_Controller controller = new Examen_Controller();
-        float resultado = controller.guardarExamen(this.tipoExamen ,this.respuestasUsuario, this.listapreguntas);
-        Desicion_From desicion = new Desicion_From();
-        desicion.setVisible(true);
-        this.dispose();
+        float resultado = controller.guardarExamen(this.tipoExamen, this.respuestasUsuario, this.listapreguntas);
+        
+        
+        mainApp.addPanel(new Desicion_From(mainApp), "Desicion");
+        mainApp.showPanel("Desicion");
         
     }
 
-    private void SiguentePregunta(){
+    private void SiguentePregunta() {
         PreguntaModel pregunta = this.listapreguntas.get(this.preguntaActualIndex);
-        List<RespuestaModel> respuestas = this.maparespuestas.get(pregunta.id);
-        
-        
+        List<RespuestaModel> respuestas = this.maparespuestas.get(pregunta.getId());
         
         int respuestaSeleccionadaId = 561;
         if (RadioButtonRespuesta1.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(0).id;
+            respuestaSeleccionadaId = respuestas.get(0).getId();
         } else if (RadioButtonRespuesta2.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(1).id;
+            respuestaSeleccionadaId = respuestas.get(1).getId();
         } else if (RadioButtonRespuesta3.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(2).id;
+            respuestaSeleccionadaId = respuestas.get(2).getId();
         } else if (RadioButtonRespuesta4.isSelected()) {
-            respuestaSeleccionadaId = respuestas.get(3).id;
+            respuestaSeleccionadaId = respuestas.get(3).getId();
         }
 
-        respuestasUsuario.put(pregunta.id, respuestaSeleccionadaId);
+        respuestasUsuario.put(pregunta.getId(), respuestaSeleccionadaId);
         System.out.println("Respuesta seleccionada: " + respuestaSeleccionadaId);
         
         if (this.preguntaActualIndex + 1 < this.listapreguntas.size()) {
-
             this.preguntaActualIndex++;
-                        
             buttonGroup1.clearSelection();
-
             mostrarPreguntaActual();
             segundos = 0;
             LabelTiempo.setText("00:00");
@@ -148,118 +133,67 @@ public class Examen_Form extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        buttonGroup1 = new ButtonGroup();
+        
+        LabelNombre = new JLabel();
+        LabelPregunta = new JLabel();
+        RadioButtonRespuesta1 = new JRadioButton();
+        RadioButtonRespuesta2 = new JRadioButton();
+        RadioButtonRespuesta3 = new JRadioButton();
+        RadioButtonRespuesta4 = new JRadioButton();
+        LabelTiempo = new JLabel();
+        ButtonSiguiente = new JButton();
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        LabelNombre = new javax.swing.JLabel();
-        LabelPregunta = new javax.swing.JLabel();
-        RadioButtonRespuesta1 = new javax.swing.JRadioButton();
-        RadioButtonRespuesta2 = new javax.swing.JRadioButton();
-        RadioButtonRespuesta3 = new javax.swing.JRadioButton();
-        RadioButtonRespuesta4 = new javax.swing.JRadioButton();
-        LabelTiempo = new javax.swing.JLabel();
-        ButtonSiguiente = new javax.swing.JButton();
+        // Configuración del layout para replicar el diseño original
+        setLayout(null); // Usamos layout absoluto como en el JFrame original
+        setPreferredSize(new Dimension(800, 500));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        LabelNombre.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        LabelNombre.setText(this.nombre);
+        LabelNombre.setBounds(71, 24, 200, 20);
 
-        LabelNombre.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        LabelNombre.setText("Nombre");
-
-        LabelPregunta.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        LabelPregunta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LabelPregunta.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        LabelPregunta.setHorizontalAlignment(SwingConstants.LEFT);
         LabelPregunta.setText("Pregunta");
+        LabelPregunta.setBounds(71, 71, 666, 95);
 
         buttonGroup1.add(RadioButtonRespuesta1);
-        RadioButtonRespuesta1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        RadioButtonRespuesta1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         RadioButtonRespuesta1.setText("jRadioButton1");
+        RadioButtonRespuesta1.setBounds(71, 193, 324, 30);
 
         buttonGroup1.add(RadioButtonRespuesta2);
-        RadioButtonRespuesta2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        RadioButtonRespuesta2.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         RadioButtonRespuesta2.setText("jRadioButton1");
+        RadioButtonRespuesta2.setBounds(71, 241, 324, 30);
 
         buttonGroup1.add(RadioButtonRespuesta3);
-        RadioButtonRespuesta3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        RadioButtonRespuesta3.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         RadioButtonRespuesta3.setText("jRadioButton1");
+        RadioButtonRespuesta3.setBounds(71, 289, 324, 30);
 
         buttonGroup1.add(RadioButtonRespuesta4);
-        RadioButtonRespuesta4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        RadioButtonRespuesta4.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         RadioButtonRespuesta4.setText("jRadioButton1");
+        RadioButtonRespuesta4.setBounds(71, 337, 324, 30);
 
-        LabelTiempo.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        LabelTiempo.setFont(new Font("Segoe UI", Font.BOLD, 36));
         LabelTiempo.setText("00:00");
+        LabelTiempo.setBounds(71, 382, 111, 92);
 
         ButtonSiguiente.setText("Siguiente");
-        ButtonSiguiente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonSiguienteActionPerformed(evt);
-            }
-        });
+        ButtonSiguiente.addActionListener(e -> SiguentePregunta());
+        ButtonSiguiente.setBounds(327, 401, 135, 47);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(RadioButtonRespuesta4, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LabelNombre)
-                    .addComponent(RadioButtonRespuesta1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(RadioButtonRespuesta2, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(RadioButtonRespuesta3, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(145, 145, 145)
-                        .addComponent(ButtonSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(LabelPregunta, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(LabelNombre)
-                .addGap(27, 27, 27)
-                .addComponent(LabelPregunta, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(RadioButtonRespuesta1)
-                .addGap(18, 18, 18)
-                .addComponent(RadioButtonRespuesta2)
-                .addGap(18, 18, 18)
-                .addComponent(RadioButtonRespuesta3)
-                .addGap(18, 18, 18)
-                .addComponent(RadioButtonRespuesta4)
-                .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ButtonSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LabelTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44))
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void ButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSiguienteActionPerformed
-        SiguentePregunta();
-        
-    }//GEN-LAST:event_ButtonSiguienteActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ButtonSiguiente;
-    private javax.swing.JLabel LabelNombre;
-    private javax.swing.JLabel LabelPregunta;
-    private javax.swing.JLabel LabelTiempo;
-    private javax.swing.JRadioButton RadioButtonRespuesta1;
-    private javax.swing.JRadioButton RadioButtonRespuesta2;
-    private javax.swing.JRadioButton RadioButtonRespuesta3;
-    private javax.swing.JRadioButton RadioButtonRespuesta4;
-    private javax.swing.ButtonGroup buttonGroup1;
-    // End of variables declaration//GEN-END:variables
+        // Añadir componentes al panel
+        add(LabelNombre);
+        add(LabelPregunta);
+        add(RadioButtonRespuesta1);
+        add(RadioButtonRespuesta2);
+        add(RadioButtonRespuesta3);
+        add(RadioButtonRespuesta4);
+        add(LabelTiempo);
+        add(ButtonSiguiente);
+    }
 }

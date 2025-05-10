@@ -30,12 +30,52 @@ BEGIN
 END;
 
 DROP PROCEDURE IF EXISTS spExamenInglescantidadExamenesPorUsuario;
-
-CREATE PROCEDURE spExamenInglescantidadExamenesPorUsuario(IN _id_usuario INT, OUT _prueba INT, OUT _final INT)
+CREATE PROCEDURE spExamenInglescantidadExamenesPorUsuario(IN _id_usuario INT, OUT _prueba INT, OUT _final INT, OUT _ya_aprobo BOOLEAN)
 BEGIN
-    select COUNT(CASE WHEN tipo_examen = 1 THEN 1 END) INTO _prueba from examen_ingles_examen where id_usuario = _id_usuario;
-    select COUNT(CASE WHEN tipo_examen = 2 THEN 1 END) INTO _final from examen_ingles_examen where id_usuario = _id_usuario;
+    SELECT COUNT(CASE WHEN tipo_examen = 1 THEN 1 END) INTO _prueba 
+    FROM examen_ingles_examen 
+    WHERE id_usuario = _id_usuario;
+
+    SELECT COUNT(CASE WHEN tipo_examen = 2 THEN 1 END) INTO _final 
+    FROM examen_ingles_examen 
+    WHERE id_usuario = _id_usuario;
+
+    SELECT EXISTS(
+        SELECT 1 
+        FROM examen_ingles_examen 
+        WHERE id_usuario = _id_usuario 
+          AND tipo_examen = 2 
+          AND nivel_ingles = 'Avanzado'
+    ) INTO _ya_aprobo;
 END;
 
-call spExamenInglescantidadExamenesPorUsuario(15, @prueba, @final);
-SELECT @prueba, @final;
+
+
+
+
+DROP PROCEDURE IF EXISTS spUltimoExamenIngles;
+CREATE PROCEDURE spUltimoExamenIngles(IN _id_usuario INT, IN _tipo_examen INT)
+BEGIN
+    DECLARE v_id_examen INT;
+
+    SELECT MAX(E2.id_examen) INTO v_id_examen
+    FROM examen_ingles_examen E2 
+    WHERE E2.id_usuario = _id_usuario AND E2.tipo_examen = _tipo_examen;
+
+    select P.id_pregunta, P.texto_pregunta
+    from examen_ingles_respuesta_usuario RU 
+    JOIN examen_ingles_pregunta P ON P.id_pregunta = RU.id_pregunta
+    where  RU.id_examen = v_id_examen
+    order by P.id_pregunta;
+
+    select RP.id_pregunta ,RP.texto_respuesta,
+    CASE WHEN RP.es_correcta = 1 THEN TRUE ELSE FALSE END AS correcta,
+    RP.id_respuesta_pregunta = RU.id_respuesta_pregunta AS seleccion_usuario
+    from examen_ingles_respuesta_usuario RU 
+    JOIN examen_ingles_respuesta_pregunta RP ON RP.id_pregunta = RU.id_pregunta
+    where  RU.id_examen = v_id_examen
+    order by RP.id_pregunta, RP.id_respuesta_pregunta;
+
+END 
+
+CALL spUltimoExamenIngles(5,1);

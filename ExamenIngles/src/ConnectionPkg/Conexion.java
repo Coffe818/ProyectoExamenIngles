@@ -3,21 +3,27 @@ package ConnectionPkg;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Conexion {
-    
-    private String host="localhost";
-    private String port= "3306";
-    private String database= "simulacion";
+
+    private String host = "localhost";
+    private String port = "3306";
+    private String database = "simulacion";
     private String username = "root";
     private String password = "root";
 
-    // LO DE ARRIBA ES PARA LA CONEXION A LA BASE DE DATOS, A ESA LA PUEDES CAMBIAR A LA TUYA SI NO NO TE VA A FUNCIONAR
+    // LO DE ARRIBA ES PARA LA CONEXION A LA BASE DE DATOS, A ESA LA PUEDES CAMBIAR
+    // A LA TUYA SI NO NO TE VA A FUNCIONAR
 
     private Connection cnx;
     private CallableStatement comando;
     private String driver = "com.mysql.cj.jdbc.Driver";
-    private String url = "jdbc:mysql://"+host+":"+port+"/"+database+"?useSSL=false&useProcedureBodies=false";
+    private String url = "jdbc:mysql://" + host + ":" + port + "/" + database
+            + "?useSSL=false&useProcedureBodies=false";
 
     public Conexion() {
         try {
@@ -27,7 +33,6 @@ public class Conexion {
             System.err.println("Error al hacer la conexion: " + e.getMessage());
         }
     }
-
 
     public void closeConnection() {
         try {
@@ -39,8 +44,6 @@ public class Conexion {
             System.err.println("Error al cerrar la conexión: " + e.getMessage());
         }
     }
-
-
 
     public void prepareCall(String sp, int numParams) throws SQLException {
         try {
@@ -98,6 +101,37 @@ public class Conexion {
 
     }
 
+    public List<List<Map<String, Object>>> executeMultipleResultSets() {
+    List<List<Map<String, Object>>> resultSetList = new ArrayList<>();
+    try {
+        boolean hasResults = comando.execute();
+        
+        while (hasResults) {
+            ResultSet rs = comando.getResultSet();
+            List<Map<String, Object>> resultList = new ArrayList<>();
+
+            if (rs != null) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    for (int i = 1; i <= columnCount; i++) {
+                        row.put(metaData.getColumnName(i), rs.getObject(i));
+                    }
+                    resultList.add(row);
+                }
+            }
+            resultSetList.add(resultList);
+            hasResults = comando.getMoreResults();
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al ejecutar multiples ResultSets: " + e.getMessage());
+    }
+    return resultSetList;
+}
+
+
     public <T> T getOutParameter(String parameterName, Class<T> type) {
         try {
             if (type == Integer.class) {
@@ -122,34 +156,32 @@ public class Conexion {
     }
 
     public void resetAll() {
-    String[] scripts = { "sql\\Tables\\tables.sql", "sql\\Data\\preguntas_respuestas.sql" }; 
+        String[] scripts = { "sql\\Tables\\tables.sql", "sql\\Data\\preguntas_respuestas.sql" };
 
-    for (String script : scripts) {
-        try (
-            BufferedReader br = new BufferedReader(new FileReader(script));
-            Statement stmt = cnx.createStatement()
-        ) {
-            StringBuilder sb = new StringBuilder();
-            String linea;
+        for (String script : scripts) {
+            try (
+                    BufferedReader br = new BufferedReader(new FileReader(script));
+                    Statement stmt = cnx.createStatement()) {
+                StringBuilder sb = new StringBuilder();
+                String linea;
 
-            while ((linea = br.readLine()) != null) {
-                sb.append(linea).append("\n");
+                while ((linea = br.readLine()) != null) {
+                    sb.append(linea).append("\n");
 
-                if (linea.trim().endsWith(";")) {
-                    String sql = sb.toString().trim();
-                    stmt.execute(sql);
-                    sb.setLength(0); 
+                    if (linea.trim().endsWith(";")) {
+                        String sql = sb.toString().trim();
+                        stmt.execute(sql);
+                        sb.setLength(0);
+                    }
                 }
+
+                System.out.println("Script ejecutado correctamente: " + script);
+
+            } catch (Exception e) {
+                System.err.println("Error al ejecutar el script " + script + ": " + e.getMessage());
             }
-
-            System.out.println("Script ejecutado correctamente: " + script);
-
-        } catch (Exception e) {
-            System.err.println("Error al ejecutar el script " + script + ": " + e.getMessage());
         }
+
     }
-}
 
-
-   
 }
