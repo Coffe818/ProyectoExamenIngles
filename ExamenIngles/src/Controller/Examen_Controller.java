@@ -352,10 +352,10 @@ public class Examen_Controller {
                         String textoRespuesta = (String) row.get("texto_respuesta");
                         boolean correcta = ((Number) row.get("correcta")).intValue() == 1;
                         boolean seleccionUsuario = ((Number) row.get("seleccion_usuario")).intValue() == 1;
-
+                        boolean noRespondio = ((Number) row.get("no_respondio")).intValue() == 1;
 
                         UltimaRespuesta respuesta = new UltimaRespuesta(idPregunta, textoRespuesta, correcta,
-                                seleccionUsuario);
+                                seleccionUsuario,noRespondio);
 
                         if (preguntasMap.containsKey(idPregunta)) {
                             preguntasMap.get(idPregunta).getRespuestas().add(respuesta);

@@ -70,7 +70,8 @@ BEGIN
 
     select RP.id_pregunta ,RP.texto_respuesta,
     CASE WHEN RP.es_correcta = 1 THEN TRUE ELSE FALSE END AS correcta,
-    RP.id_respuesta_pregunta = RU.id_respuesta_pregunta AS seleccion_usuario
+    RP.id_respuesta_pregunta = RU.id_respuesta_pregunta AS seleccion_usuario,
+    CASE WHEN RU.id_respuesta_pregunta =561 THEN TRUE ELSE FALSE END AS no_respondio
     from examen_ingles_respuesta_usuario RU 
     JOIN examen_ingles_respuesta_pregunta RP ON RP.id_pregunta = RU.id_pregunta
     where  RU.id_examen = v_id_examen
@@ -78,4 +79,4 @@ BEGIN
 
 END 
 
-CALL spUltimoExamenIngles(5,1);
+CALL spUltimoExamenIngles(10,1);

@@ -19,11 +19,14 @@ public class PanelExamen extends JPanel {
     private JButton btnAnterior, btnSiguiente, btnRegresar;
 
     MainApp mainApp;
+
     public PanelExamen(int id_usuario, int tipoExamen, MainApp mainApp) {
         Examen_Controller controller = new Examen_Controller();
         this.preguntas = controller.getUltimoExamen(id_usuario, tipoExamen);
-        Collections.sort(preguntas, Comparator.comparingInt(UltimaPreguntasModel::getId_pregunta));
+
         
+        Collections.sort(preguntas, Comparator.comparingInt(UltimaPreguntasModel::getId_pregunta));
+
         setPreferredSize(new java.awt.Dimension(800, 550));
         this.mainApp = mainApp;
         this.setLayout(new BorderLayout());
@@ -33,6 +36,7 @@ public class PanelExamen extends JPanel {
         lblPregunta.setFont(new Font("Arial", Font.BOLD, 18));
         lblPregunta.setHorizontalAlignment(SwingConstants.CENTER);
         lblPregunta.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
 
         // Panel central para organizar la pregunta y respuestas
         JPanel panelCentro = new JPanel();
@@ -44,7 +48,7 @@ public class PanelExamen extends JPanel {
         for (int i = 0; i < 4; i++) {
             JLabel opcionLabel = new JLabel();
             opcionLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-            opcionLabel.setOpaque(true);  // Necesario para aplicar el fondo
+            opcionLabel.setOpaque(true); // Necesario para aplicar el fondo
             opcionLabel.setHorizontalAlignment(SwingConstants.LEFT); // Justificar a la izquierda
             panelCentro.add(opcionLabel);
         }
@@ -76,13 +80,23 @@ public class PanelExamen extends JPanel {
                 mostrarPregunta(index - 1);
             } else if (e.getSource() == btnSiguiente) {
                 mostrarPregunta(index + 1);
-            } 
+            }
             if (e.getSource() == btnRegresar) {
-                System.out.println("Botón 'Regresar' presionado");
                 mainApp.addPanel(new Desicion_From(mainApp), "Desicion");
                 mainApp.showPanel("Desicion");
             }
         };
+
+        if (preguntas == null || preguntas.isEmpty()) {
+            if (tipoExamen == 1) {
+                lblPregunta.setText("No ha presentado ningún examen de prueba.");
+            } else if (tipoExamen == 2) {
+                lblPregunta.setText("No ha presentado ningún examen final.");
+            }
+            btnAnterior.setEnabled(false);
+            btnSiguiente.setEnabled(false);
+
+        }
 
         btnAnterior.addActionListener(navegacion);
         btnSiguiente.addActionListener(navegacion);
@@ -90,21 +104,27 @@ public class PanelExamen extends JPanel {
     }
 
     private void mostrarPregunta(int nuevaIndex) {
+        if (preguntas == null || preguntas.isEmpty()) {
+            return;
+        }
         if (nuevaIndex < 0 || nuevaIndex >= preguntas.size())
             return;
 
         index = nuevaIndex;
 
         UltimaPreguntasModel pregunta = preguntas.get(index);
+        String textoConBr = pregunta.getTexto().replace("\n", "<br>");
+        String textopregunta = (index + 1) + ".- " + textoConBr;
+        String textoHtml = "<html>" + textopregunta + "</html>";
 
-        lblPregunta.setText((index + 1) + ". " + pregunta.getTexto());
+        // Actualizamos el JLabel de la pregunta
+        lblPregunta.setText(textoHtml);
 
         List<UltimaRespuesta> respuestas = pregunta.getRespuestas();
 
- 
-        JPanel panelCentro = (JPanel) this.getComponent(0);  
+        JPanel panelCentro = (JPanel) this.getComponent(0);
         panelCentro.removeAll();
-        panelCentro.add(lblPregunta);  
+        panelCentro.add(lblPregunta);
         for (int i = 0; i < respuestas.size(); i++) {
             UltimaRespuesta respuesta = respuestas.get(i);
             JLabel opcionLabel = new JLabel();
@@ -113,13 +133,17 @@ public class PanelExamen extends JPanel {
             opcionLabel.setOpaque(true);
             opcionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-            if (respuesta.isCorrecta()) {
-                opcionLabel.setForeground(Color.GREEN);
-            } else if (respuesta.isSeleccionada_usuario()) {
-                opcionLabel.setForeground(Color.RED);
+            if (respuesta.isNo_respondio()) {
+                opcionLabel.setForeground(Color.GRAY);
+            } else {
+                if (respuesta.isCorrecta()) {
+                    opcionLabel.setForeground(Color.GREEN);
+                } else if (respuesta.isSeleccionada_usuario()) {
+                    opcionLabel.setForeground(Color.RED);
+                }
             }
 
-            panelCentro.add(opcionLabel); 
+            panelCentro.add(opcionLabel);
         }
 
         panelCentro.revalidate();

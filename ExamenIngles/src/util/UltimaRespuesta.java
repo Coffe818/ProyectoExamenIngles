@@ -5,12 +5,13 @@ public class UltimaRespuesta {
     private String texto;
     private boolean correcta;
     private boolean seleccionada_usuario;
-
-    public UltimaRespuesta(int id_pregunta, String texto, boolean correcta, boolean seleccionada_usuario) {
+    private boolean no_respondio;
+    public UltimaRespuesta(int id_pregunta, String texto, boolean correcta, boolean seleccionada_usuario, boolean no_respondio) {
         this.id_pregunta = id_pregunta;
         this.texto = texto;
         this.correcta = correcta;
         this.seleccionada_usuario = seleccionada_usuario;
+        this.no_respondio = no_respondio;
     }
 
     public int getId_pregunta() {
@@ -43,6 +44,12 @@ public class UltimaRespuesta {
 
     public void setSeleccionada_usuario(boolean seleccionada_usuario) {
         this.seleccionada_usuario = seleccionada_usuario;
+    }
+    public boolean isNo_respondio() {
+        return no_respondio;
+    }
+    public void setNo_respondio(boolean no_respondio) {
+        this.no_respondio = no_respondio;
     }
 
     @Override
