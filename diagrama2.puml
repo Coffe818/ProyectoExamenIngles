@@ -1,0 +1,62 @@
+@startuml examen de ingles
+class PreguntaModel {
+    - id : int
+    - texto : String
+    - nivel : String
+    - idRespuestaCorrecta : int
+    + PreguntaModel(int, String, String, int)
+    + getId() : int
+    + setId(int) : void
+    + getTexto() : String
+    + setTexto(String) : void
+    + getNivel() : String
+    + setNivel(String) : void
+    + getIdRespuestaCorrecta() : int
+    + setIdRespuestaCorrecta(int) : void
+}
+
+class RespuestaModel {
+    - texto : String
+    - id : int
+    + RespuestaModel(String, int)
+    + getTexto() : String
+    + setTexto(String) : void
+    + getId() : int
+    + setId(int) : void
+}
+
+class UltimaPreguntasModel {
+    - id_pregunta : int
+    - texto : String
+    - respuestas : List<UltimaRespuesta>
+    + UltimaPreguntasModel(int, String, List<UltimaRespuesta>)
+    + getId_pregunta() : int
+    + setId_pregunta(int) : void
+    + getTexto() : String
+    + setTexto(String) : void
+    + getRespuestas() : List<UltimaRespuesta>
+    + setRespuestas(List<UltimaRespuesta>) : void
+}
+
+class UltimaRespuesta {
+    - id_pregunta : int
+    - texto : String
+    - correcta : boolean
+    - seleccionada_usuario : boolean
+    - no_respondio : boolean
+    + UltimaRespuesta(int, String, boolean, boolean, boolean)
+    + getId_pregunta() : int
+    + setId_pregunta(int) : void
+    + getTexto() : String
+    + setTexto(String) : void
+    + isCorrecta() : boolean
+    + setCorrecta(boolean) : void
+    + isSeleccionada_usuario() : boolean
+    + setSeleccionada_usuario(boolean) : void
+    + isNo_respondio() : boolean
+    + setNo_respondio(boolean) : void
+}
+
+PreguntaModel --> RespuestaModel : "1"
+UltimaPreguntasModel --> UltimaRespuesta : "1..*"
+@enduml
